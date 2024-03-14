@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: ecommerce
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+
+security:
+  jwt:
+    token:
+      secret-key: 'ecommerce-study-secret-key'
+      expire-length: 3600000
+
