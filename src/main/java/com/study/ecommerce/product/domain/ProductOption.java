@@ -25,6 +25,7 @@ public class ProductOption {
     private Product product;
 
     @OneToMany(mappedBy = "productOption", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ProductOptionDetail> productOptionDetails = new ArrayList<>();
 
     public void addDetail(ProductOptionDetail productOptionDetail) {

@@ -21,10 +21,10 @@ public class Product {
 
     private int deliveryFee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member seller;
+    private Long sellerId;
 
     @Embedded
+    @Builder.Default
     private ProductOptionGroups productOptionGroups = new ProductOptionGroups();
 
     public int getDefaultPrice() {
@@ -33,5 +33,9 @@ public class Product {
 
     public int getTotalStock() {
         return productOptionGroups.getTotalStock();
+    }
+
+    public void addOptionGroup(ProductOptionGroup productOptionGroup) {
+        productOptionGroups.add(productOptionGroup);
     }
 }

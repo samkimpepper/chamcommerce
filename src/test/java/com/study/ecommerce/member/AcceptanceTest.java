@@ -30,7 +30,7 @@ public class AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
-        //databaseCleanup.execute();
+        databaseCleanup.execute();
         RestAssured.defaultParser = Parser.JSON;
 
         memberService.signUp(MemberFixture.createCustomer());

@@ -14,10 +14,11 @@ public class ProductCreateRequest {
     private int deliveryFee;
     private List<OptionCreateRequest> options;
 
-    public Product toEntity() {
+    public Product toEntity(Long sellerId) {
         return Product.builder()
                 .name(name)
                 .deliveryFee(deliveryFee)
+                .sellerId(sellerId)
                 .build();
     }
 }

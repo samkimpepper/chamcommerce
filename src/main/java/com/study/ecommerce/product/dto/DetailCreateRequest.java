@@ -8,11 +8,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class DetailCreateRequest {
-    private String value;
+    private String optionValue;
+    private String description;
 
     public ProductOptionDetail toEntity(ProductOption option) {
         return ProductOptionDetail.builder()
-                .optionValue(value)
+                .optionValue(optionValue)
                 .productOption(option)
                 .build();
     }

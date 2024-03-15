@@ -1,6 +1,7 @@
 package com.study.ecommerce.auth.token;
 
 import com.study.ecommerce.member.Member;
+import com.study.ecommerce.member.MemberDetails;
 import com.study.ecommerce.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,7 +22,16 @@ public class MemberDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return createUser(member);
+        return createMemberDetails(member);
+    }
+
+    private MemberDetails createMemberDetails(Member member) {
+        return new MemberDetails(
+                member.getId(),
+                member.getEmail(),
+                member.getPassword(),
+                member.getRoles()
+        );
     }
 
     private User createUser(Member member) {

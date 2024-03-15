@@ -27,4 +27,5 @@ public class MemberController {
 
         return ResponseEntity.ok(memberService.login(loginRequest));
     }
+
 }

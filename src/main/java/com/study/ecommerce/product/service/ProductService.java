@@ -1,12 +1,13 @@
 package com.study.ecommerce.product.service;
 
 import com.study.ecommerce.product.domain.*;
-import com.study.ecommerce.product.dto.DetailCreateRequest;
-import com.study.ecommerce.product.dto.OptionCreateRequest;
-import com.study.ecommerce.product.dto.ProductCreateRequest;
-import com.study.ecommerce.product.dto.ProductResponse;
+import com.study.ecommerce.product.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +17,13 @@ public class ProductService {
     private final ProductOptionDetailRepository productOptionDetailRepository;
     private final ProductOptionGroupRepository productOptionGroupRepository;
 
-    public ProductResponse createProductInfo(ProductCreateRequest request) {
-        Product product = request.toEntity();
+    public ProductResponse createProductInfo(ProductCreateRequest request, Long sellerId) {
+        Product product = request.toEntity(sellerId);
         productRepository.save(product);
 
         for (OptionCreateRequest optionCreateRequest : request.getOptions()) {
             ProductOption productOption = optionCreateRequest.toEntity(product);
+            productOptionRepository.save(productOption);
 
             for (DetailCreateRequest detailCreateRequest : optionCreateRequest.getDetails()) {
                 ProductOptionDetail productOptionDetail = detailCreateRequest.toEntity(productOption);
@@ -32,6 +34,39 @@ public class ProductService {
             productOptionRepository.save(productOption);
         }
 
-        return ProductResponse.of(product);
+        return generateProductResponse(product);
+    }
+
+    public ProductResponse createProductOptionGroup(Long productId, OptionGroupCreateRequest request) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+
+        List<ProductOptionDetail> details = new ArrayList<>();
+        for (Long detailId : request.getDetailIds()) {
+            ProductOptionDetail productOptionDetail = productOptionDetailRepository.findById(detailId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 옵션입니다."));
+            details.add(productOptionDetail);
+        }
+
+        ProductOptionGroup productOptionGroup = request.toEntity(product, details);
+        productOptionGroupRepository.save(productOptionGroup);
+
+        product.addOptionGroup(productOptionGroup);
+        productRepository.save(product);
+
+        return generateProductResponse(product);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductResponse getProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+
+        return generateProductResponse(product);
+    }
+
+    public ProductResponse generateProductResponse(Product product) {
+        List<ProductOption> options = productOptionRepository.findAllByProduct(product);
+        return ProductResponse.of(product, options);
     }
 }

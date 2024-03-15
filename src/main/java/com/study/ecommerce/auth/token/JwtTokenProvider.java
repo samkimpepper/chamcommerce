@@ -1,5 +1,7 @@
 package com.study.ecommerce.auth.token;
 
+import com.study.ecommerce.member.MemberDetails;
+import com.study.ecommerce.member.Role;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,8 +28,9 @@ public class JwtTokenProvider {
     private long validityInMilliseconds;
 
     public String generateToken(Authentication authentication) {
-        User principal = (User) authentication.getPrincipal();
+        MemberDetails principal = (MemberDetails) authentication.getPrincipal();
         Claims claims = Jwts.claims().setSubject(principal.getUsername());
+        claims.put("id", principal.getId());
         claims.put("authorities", principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")));
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -42,12 +46,19 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
 
+        Long id = body.get("id", Long.class);
+
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(body.get("authorities", String.class).split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        UserDetails principal = new User(body.getSubject(), "", authorities);
+        Set<Role> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(Role::valueOf)
+                .collect(Collectors.toSet());
+
+        MemberDetails principal = new MemberDetails(id, body.getSubject(), "", roles);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 

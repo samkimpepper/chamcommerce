@@ -7,6 +7,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 
 import java.util.List;
@@ -24,8 +25,12 @@ public class DatabaseCleanup implements InitializingBean {
     public void afterPropertiesSet() {
         tableNames = entityManager.getMetamodel().getEntities().stream()
                 .filter(entity -> entity.getJavaType().getAnnotation(Entity.class) != null)
-                .map(entity -> entity.getName())
+                .map(entity -> camelCaseToSnakeCase(entity.getName()))
                 .collect(Collectors.toList());
+    }
+
+    private static String camelCaseToSnakeCase(String str) {
+        return str.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
     }
 
     @Transactional
