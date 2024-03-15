@@ -1,6 +1,6 @@
 package com.study.ecommerce.order;
 
-import com.study.ecommerce.product.domain.ProductOptionGroup;
+import com.study.ecommerce.product.domain.ProductItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderOptionGroup {
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +21,7 @@ public class OrderOptionGroup {
     private Order order;
 
     @ManyToOne
-    private ProductOptionGroup productOptionGroup;
+    private ProductItem productItem;
 
     private String productName;
 

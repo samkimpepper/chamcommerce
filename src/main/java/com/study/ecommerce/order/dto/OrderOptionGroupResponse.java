@@ -1,7 +1,7 @@
 package com.study.ecommerce.order.dto;
 
-import com.study.ecommerce.order.OrderOptionGroup;
-import com.study.ecommerce.order.OrderOptionGroups;
+import com.study.ecommerce.order.OrderItem;
+import com.study.ecommerce.order.OrderItems;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,19 +16,19 @@ public class OrderOptionGroupResponse {
     private int price;
     private int totalPrice;
 
-    public static List<OrderOptionGroupResponse> listOf(OrderOptionGroups orderOptionGroups) {
-        return orderOptionGroups.stream()
+    public static List<OrderOptionGroupResponse> listOf(OrderItems orderItems) {
+        return orderItems.stream()
                 .map(OrderOptionGroupResponse::of)
                 .toList();
     }
 
-    public static OrderOptionGroupResponse of(OrderOptionGroup orderOptionGroup) {
+    public static OrderOptionGroupResponse of(OrderItem orderItem) {
         return OrderOptionGroupResponse.builder()
-                .productName(orderOptionGroup.getProductName())
-                .optionName(orderOptionGroup.getOptionName())
-                .quantity(orderOptionGroup.getQuantity())
-                .price(orderOptionGroup.getPrice())
-                .totalPrice(orderOptionGroup.getTotalPrice())
+                .productName(orderItem.getProductName())
+                .optionName(orderItem.getOptionName())
+                .quantity(orderItem.getQuantity())
+                .price(orderItem.getPrice())
+                .totalPrice(orderItem.getTotalPrice())
                 .build();
     }
 }

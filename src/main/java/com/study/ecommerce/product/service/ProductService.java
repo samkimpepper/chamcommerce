@@ -15,7 +15,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final ProductOptionDetailRepository productOptionDetailRepository;
-    private final ProductOptionGroupRepository productOptionGroupRepository;
+    private final ProductItemRepository productItemRepository;
 
     public ProductResponse createProductInfo(ProductCreateRequest request, Long sellerId) {
         Product product = request.toEntity(sellerId);
@@ -37,7 +37,7 @@ public class ProductService {
         return generateProductResponse(product);
     }
 
-    public ProductResponse createProductOptionGroup(Long productId, OptionGroupCreateRequest request) {
+    public ProductResponse createProductItem(Long productId, ProductItemCreateRequest request) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
@@ -48,10 +48,10 @@ public class ProductService {
             details.add(productOptionDetail);
         }
 
-        ProductOptionGroup productOptionGroup = request.toEntity(product, details);
-        productOptionGroupRepository.save(productOptionGroup);
+        ProductItem productItem = request.toEntity(product, details);
+        productItemRepository.save(productItem);
 
-        product.addOptionGroup(productOptionGroup);
+        product.addOptionGroup(productItem);
         productRepository.save(product);
 
         return generateProductResponse(product);

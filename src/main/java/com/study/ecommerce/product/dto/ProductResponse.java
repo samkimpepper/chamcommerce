@@ -15,7 +15,7 @@ public class ProductResponse {
     private int deliveryFee;
     private int defaultPrice;
     private int totalStock;
-    private List<OptionGroupResponse> optionGroups;
+    private List<ProductItemResponse> optionGroups;
     private List<OptionResponse> options;
 
     public static ProductResponse of(Product product, List<ProductOption> options) {
@@ -25,7 +25,7 @@ public class ProductResponse {
                 .deliveryFee(product.getDeliveryFee())
                 .defaultPrice(product.getDefaultPrice())
                 .totalStock(product.getTotalStock())
-                .optionGroups(OptionGroupResponse.listOf(product.getProductOptionGroups()))
+                .optionGroups(ProductItemResponse.listOf(product.getProductItems()))
                 .options(OptionResponse.listOf(options))
                 .build();
     }

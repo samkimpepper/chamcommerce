@@ -2,7 +2,7 @@ package com.study.ecommerce.product;
 
 import com.study.ecommerce.product.dto.DetailCreateRequest;
 import com.study.ecommerce.product.dto.OptionCreateRequest;
-import com.study.ecommerce.product.dto.OptionGroupCreateRequest;
+import com.study.ecommerce.product.dto.ProductItemCreateRequest;
 import com.study.ecommerce.product.dto.ProductCreateRequest;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class ProductFixture {
         return new OptionCreateRequest("사이즈", details);
     }
 
-    public static OptionGroupCreateRequest defaultOptionGroupCreateRequest(List<Long> detailIds) {
-        return new OptionGroupCreateRequest(detailIds, 15000, 50);
+    public static ProductItemCreateRequest defaultOptionGroupCreateRequest(List<Long> detailIds) {
+        return new ProductItemCreateRequest(detailIds, 15000, 50);
     }
 }

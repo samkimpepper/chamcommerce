@@ -1,6 +1,5 @@
 package com.study.ecommerce.product.domain;
 
-import com.study.ecommerce.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,17 +24,17 @@ public class Product {
 
     @Embedded
     @Builder.Default
-    private ProductOptionGroups productOptionGroups = new ProductOptionGroups();
+    private ProductItems productItems = new ProductItems();
 
     public int getDefaultPrice() {
-        return productOptionGroups.getMinimumPrice();
+        return productItems.getMinimumPrice();
     }
 
     public int getTotalStock() {
-        return productOptionGroups.getTotalStock();
+        return productItems.getTotalStock();
     }
 
-    public void addOptionGroup(ProductOptionGroup productOptionGroup) {
-        productOptionGroups.add(productOptionGroup);
+    public void addOptionGroup(ProductItem productItem) {
+        productItems.add(productItem);
     }
 }

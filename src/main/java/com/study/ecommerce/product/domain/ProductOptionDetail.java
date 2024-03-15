@@ -23,5 +23,5 @@ public class ProductOptionDetail {
     private ProductOption productOption;
 
     @ManyToOne
-    private ProductOptionGroup productOptionGroup;
+    private ProductItem productItem;
 }

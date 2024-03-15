@@ -1,11 +1,9 @@
 package com.study.ecommerce.order.dto;
 
 import com.study.ecommerce.order.Order;
-import com.study.ecommerce.order.OrderOptionGroups;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +26,7 @@ public class OrderResponse {
                 .totalQuantity(order.getTotalQuantity())
                 .deliveryFee(order.getDeliveryFee())
                 .orderedAt(order.getOrderedAt())
-                .orderOptions(OrderOptionGroupResponse.listOf(order.getOrderOptionGroups()))
+                .orderOptions(OrderOptionGroupResponse.listOf(order.getOrderItems()))
                 .build();
     }
 }

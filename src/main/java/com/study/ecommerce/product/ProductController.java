@@ -1,7 +1,7 @@
 package com.study.ecommerce.product;
 
 import com.study.ecommerce.auth.token.MemberDetails;
-import com.study.ecommerce.product.dto.OptionGroupCreateRequest;
+import com.study.ecommerce.product.dto.ProductItemCreateRequest;
 import com.study.ecommerce.product.dto.ProductCreateRequest;
 import com.study.ecommerce.product.dto.ProductResponse;
 import com.study.ecommerce.product.service.ProductService;
@@ -26,8 +26,10 @@ public class ProductController {
 
     @PostMapping("/products/{productId}/option-groups")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<ProductResponse> createProductOptionGroup(@PathVariable("productId") Long productId, @RequestBody OptionGroupCreateRequest request) {
-        return ResponseEntity.ok().body(productService.createProductOptionGroup(productId, request));
+    public ResponseEntity<ProductResponse> createProductItem(
+            @PathVariable("productId") Long productId,
+            @RequestBody ProductItemCreateRequest request) {
+        return ResponseEntity.ok().body(productService.createProductItem(productId, request));
     }
 
     @GetMapping("/products/{productId}")

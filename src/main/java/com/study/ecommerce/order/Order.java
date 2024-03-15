@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Entity(name = "orders")
 @Getter
@@ -26,28 +25,28 @@ public class Order {
 
     @Embedded
     @Builder.Default
-    private OrderOptionGroups orderOptionGroups = new OrderOptionGroups();
+    private OrderItems orderItems = new OrderItems();
 
     public int getTotalPrice() {
-        return orderOptionGroups.getTotalPrice();
+        return orderItems.getTotalPrice();
     }
 
     public int getTotalQuantity() {
-        return orderOptionGroups.getTotalQuantity();
+        return orderItems.getTotalQuantity();
     }
 
-    public void setOrderOptionGroups(List<OrderOptionGroup> orderOptionGroups) {
-        this.orderOptionGroups.setOrderOptionGroups(orderOptionGroups);
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems.setOrderOptionGroups(orderItems);
     }
 
-    public static Order of(Long customerId, List<OrderOptionGroup> orderOptionGroups) {
+    public static Order of(Long customerId, List<OrderItem> orderItems) {
         Order order = Order.builder()
                 .customerId(customerId)
                 .orderedAt(LocalDateTime.now())
                 .build();
 
-        order.setOrderOptionGroups(orderOptionGroups);
-        order.setDeliveryFee(DeliveryFeeCalculator.calculate(order.getOrderOptionGroups()));
+        order.setOrderItems(orderItems);
+        order.setDeliveryFee(DeliveryFeeCalculator.calculate(order.getOrderItems()));
 
         return order;
     }

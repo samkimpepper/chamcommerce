@@ -21,7 +21,6 @@ public class OrderController {
     public ResponseEntity<OrderResponse> createOrder(
             @AuthenticationPrincipal MemberDetails member,
             @RequestBody OrderCreateRequest request) {
-
         return ResponseEntity.ok().body(orderService.createOrder(request, member.getId()));
     }
 }
