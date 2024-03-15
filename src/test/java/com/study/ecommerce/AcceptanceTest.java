@@ -1,6 +1,8 @@
-package com.study.ecommerce.member;
+package com.study.ecommerce;
 
 import com.study.ecommerce.DatabaseCleanup;
+import com.study.ecommerce.member.MemberFixture;
+import com.study.ecommerce.member.MemberService;
 import com.study.ecommerce.member.acceptance.MemberSteps;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
@@ -30,7 +32,7 @@ public class AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
-        databaseCleanup.execute();
+        //databaseCleanup.execute();
         RestAssured.defaultParser = Parser.JSON;
 
         memberService.signUp(MemberFixture.createCustomer());

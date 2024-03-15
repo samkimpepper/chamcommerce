@@ -1,7 +1,6 @@
 package com.study.ecommerce.product;
 
-import com.study.ecommerce.member.MemberDetails;
-import com.study.ecommerce.product.dto.DetailCreateRequest;
+import com.study.ecommerce.auth.token.MemberDetails;
 import com.study.ecommerce.product.dto.OptionGroupCreateRequest;
 import com.study.ecommerce.product.dto.ProductCreateRequest;
 import com.study.ecommerce.product.dto.ProductResponse;
@@ -10,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

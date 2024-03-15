@@ -1,10 +1,7 @@
 package com.study.ecommerce.product;
 
-import com.study.ecommerce.member.AcceptanceTest;
+import com.study.ecommerce.AcceptanceTest;
 import com.study.ecommerce.product.dto.ProductResponse;
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

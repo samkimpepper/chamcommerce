@@ -40,4 +40,8 @@ public class ProductSteps {
                 .map(optionResponse -> optionResponse.getId())
                 .orElseThrow(() -> new IllegalArgumentException("옵션 정보가 존재하지 않습니다."));
     }
+
+    public static Long parseProductOptionGroupId(ProductResponse productResponse, int index) {
+        return productResponse.getOptionGroups().get(index).getId();
+    }
 }

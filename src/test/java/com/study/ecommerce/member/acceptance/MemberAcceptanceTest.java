@@ -1,6 +1,6 @@
 package com.study.ecommerce.member.acceptance;
 
-import com.study.ecommerce.member.AcceptanceTest;
+import com.study.ecommerce.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
