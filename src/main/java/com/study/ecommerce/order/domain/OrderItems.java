@@ -1,4 +1,4 @@
-package com.study.ecommerce.order;
+package com.study.ecommerce.order.domain;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.OneToMany;
@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 @Embeddable
 public class OrderItems implements Iterable<OrderItem> {
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", orphanRemoval = true)
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 

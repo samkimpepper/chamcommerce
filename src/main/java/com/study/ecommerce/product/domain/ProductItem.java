@@ -19,7 +19,7 @@ public class ProductItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "productOptionGroup")
+    @OneToMany(mappedBy = "productItem")
     private List<ProductOptionDetail> productOptionDetails = new ArrayList<>();
 
     @ManyToOne

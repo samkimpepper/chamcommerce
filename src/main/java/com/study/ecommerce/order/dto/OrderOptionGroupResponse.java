@@ -1,7 +1,7 @@
 package com.study.ecommerce.order.dto;
 
-import com.study.ecommerce.order.OrderItem;
-import com.study.ecommerce.order.OrderItems;
+import com.study.ecommerce.order.domain.OrderItem;
+import com.study.ecommerce.order.domain.OrderItems;
 import lombok.Builder;
 import lombok.Getter;
 

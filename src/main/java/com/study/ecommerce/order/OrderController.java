@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,5 +23,11 @@ public class OrderController {
             @AuthenticationPrincipal MemberDetails member,
             @RequestBody OrderCreateRequest request) {
         return ResponseEntity.ok().body(orderService.createOrder(request, member.getId()));
+    }
+
+    @PostMapping("/orders/{orderId}/cancel")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<OrderResponse> cancelOrder(@PathVariable Long orderId) {
+        return ResponseEntity.ok().body(orderService.cancelOrder(orderId));
     }
 }

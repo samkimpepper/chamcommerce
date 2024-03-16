@@ -1,4 +1,4 @@
-package com.study.ecommerce.order;
+package com.study.ecommerce.order.domain;
 
 import com.study.ecommerce.product.domain.ProductItem;
 import jakarta.persistence.*;

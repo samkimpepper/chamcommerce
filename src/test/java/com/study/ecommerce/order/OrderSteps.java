@@ -24,4 +24,13 @@ public class OrderSteps {
                 .when().post("/orders")
                 .then().log().all().extract().as(OrderResponse.class);
     }
+
+    public static OrderResponse cancelOrder(Long orderId, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().post("/orders/" + orderId + "/cancel")
+                .then().log().all().extract().as(OrderResponse.class);
+    }
+
 }

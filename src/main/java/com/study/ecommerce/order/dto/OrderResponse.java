@@ -1,6 +1,6 @@
 package com.study.ecommerce.order.dto;
 
-import com.study.ecommerce.order.Order;
+import com.study.ecommerce.order.domain.Order;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,6 +15,7 @@ public class OrderResponse {
     private int totalPrice;
     private int totalQuantity;
     private int deliveryFee;
+    private String status;
     private LocalDateTime orderedAt;
     private List<OrderOptionGroupResponse> orderOptions;
 
@@ -25,6 +26,7 @@ public class OrderResponse {
                 .totalPrice(order.getTotalPrice())
                 .totalQuantity(order.getTotalQuantity())
                 .deliveryFee(order.getDeliveryFee())
+                .status(order.getStatus().name())
                 .orderedAt(order.getOrderedAt())
                 .orderOptions(OrderOptionGroupResponse.listOf(order.getOrderItems()))
                 .build();

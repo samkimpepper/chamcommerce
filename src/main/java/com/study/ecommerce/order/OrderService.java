@@ -1,5 +1,7 @@
 package com.study.ecommerce.order;
 
+import com.study.ecommerce.order.domain.Order;
+import com.study.ecommerce.order.domain.OrderItem;
 import com.study.ecommerce.order.dto.OrderCreateRequest;
 import com.study.ecommerce.order.dto.OrderOptionGroupRequest;
 import com.study.ecommerce.order.dto.OrderResponse;
@@ -7,6 +9,7 @@ import com.study.ecommerce.product.domain.ProductItem;
 import com.study.ecommerce.product.domain.ProductItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -40,6 +43,16 @@ public class OrderService {
         Order order = Order.of(customerId, orderItems);
 
         orderRepository.save(order);
+
+        return OrderResponse.of(order);
+    }
+
+    @Transactional
+    public OrderResponse cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+
+        order.cancel();
 
         return OrderResponse.of(order);
     }

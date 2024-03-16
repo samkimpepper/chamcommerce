@@ -4,9 +4,32 @@ import com.study.ecommerce.product.dto.ProductResponse;
 import io.restassured.RestAssured;
 import org.springframework.http.MediaType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductSteps {
+    public static List<Long> createProducts(String accessToken) {
+        List<Long> productItemIds = new ArrayList<>();
+
+        ProductResponse productResponse = ProductSteps.createProductInfo(accessToken);
+
+        Long productId = ProductSteps.parseProductId(productResponse);
+        Long detailId = ProductSteps.parseProductOptionDetailId(productResponse, "색상", "검정색");
+        Long detailId2 = ProductSteps.parseProductOptionDetailId(productResponse, "사이즈", "L");
+
+        ProductResponse response = ProductSteps.createProductOptionGroup(productId, List.of(detailId, detailId2), accessToken);
+
+        productItemIds.add(ProductSteps.parseProductOptionGroupId(response, 0));
+
+        detailId = ProductSteps.parseProductOptionDetailId(productResponse, "색상", "흰색");
+        detailId2 = ProductSteps.parseProductOptionDetailId(productResponse, "사이즈", "M");
+
+        response = ProductSteps.createProductOptionGroup(productId, List.of(detailId, detailId2), accessToken);
+
+        productItemIds.add(ProductSteps.parseProductOptionGroupId(response, 1));
+
+        return productItemIds;
+    }
     public static ProductResponse createProductInfo(String accessToken) {
         return RestAssured
                 .given().log().all()

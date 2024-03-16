@@ -30,9 +30,11 @@ public class AcceptanceTest {
 
     protected static String ACCESS_TOKEN_SELLER;
 
+    protected static String ACCESS_TOKEN_SELLER2;
+
     @BeforeEach
     public void setUp() {
-        //databaseCleanup.execute();
+        databaseCleanup.execute();
         RestAssured.defaultParser = Parser.JSON;
 
         memberService.signUp(MemberFixture.createCustomer());
@@ -40,5 +42,8 @@ public class AcceptanceTest {
 
         memberService.signUp(MemberFixture.createSeller());
         ACCESS_TOKEN_SELLER = MemberSteps.requestToLogin(MemberFixture.SELLER_EMAIL, MemberFixture.PASSWORD).getAccessToken();
+
+        memberService.signUp(MemberFixture.createSeller2());
+        ACCESS_TOKEN_SELLER2 = MemberSteps.requestToLogin(MemberFixture.SELLER2_EMAIL, MemberFixture.PASSWORD).getAccessToken();
     }
 }

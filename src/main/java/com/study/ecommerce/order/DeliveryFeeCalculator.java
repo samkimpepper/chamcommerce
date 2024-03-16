@@ -1,11 +1,14 @@
 package com.study.ecommerce.order;
 
+import com.study.ecommerce.order.domain.OrderItem;
+import com.study.ecommerce.order.domain.OrderItems;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DeliveryFeeCalculator {
-    public static final int FREE_DELIVERY_THRESHOLD = 30_000;
+    public static final int FREE_DELIVERY_THRESHOLD = 50_000;
     public static final int BASE_DELIVERY_FEE = 3_000;
 
     public static int calculate(OrderItems orderItems) {

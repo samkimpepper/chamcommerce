@@ -1,6 +1,6 @@
 package com.study.ecommerce.order.dto;
 
-import com.study.ecommerce.order.OrderItem;
+import com.study.ecommerce.order.domain.OrderItem;
 import com.study.ecommerce.product.domain.ProductItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

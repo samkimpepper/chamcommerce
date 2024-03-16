@@ -9,6 +9,7 @@ public class MemberFixture {
     public static final String PASSWORD = "password";
 
     public static final String SELLER_EMAIL = "seller@seller.com";
+    public static final String SELLER2_EMAIL = "seller2@seller.com";
 
     public static SignupRequest createCustomer() {
         return new SignupRequest(CUSTOMER_EMAIL, PASSWORD, "ROLE_CUSTOMER");
@@ -16,6 +17,10 @@ public class MemberFixture {
 
     public static SignupRequest createSeller() {
         return new SignupRequest(SELLER_EMAIL, PASSWORD, "ROLE_SELLER");
+    }
+
+    public static SignupRequest createSeller2() {
+        return new SignupRequest(SELLER2_EMAIL, PASSWORD, "ROLE_SELLER");
     }
 
     public static Member createAdmin() {
