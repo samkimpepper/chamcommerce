@@ -1,8 +1,9 @@
-package com.study.ecommerce.order;
+package com.study.ecommerce.order.units;
 
 import com.study.ecommerce.member.Member;
 import com.study.ecommerce.member.MemberFixture;
 import com.study.ecommerce.member.MemberService;
+import com.study.ecommerce.order.OrderService;
 import com.study.ecommerce.order.domain.OrderStatus;
 import com.study.ecommerce.order.dto.OrderCreateRequest;
 import com.study.ecommerce.order.dto.OrderItemRequest;
