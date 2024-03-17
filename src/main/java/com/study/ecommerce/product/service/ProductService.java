@@ -65,7 +65,23 @@ public class ProductService {
         return generateProductResponse(product);
     }
 
-    public ProductResponse generateProductResponse(Product product) {
+    public ProductResponse restock(Long productId, List<RestockRequest> requests) {
+        for (RestockRequest request : requests) {
+            ProductItem productItem = productItemRepository.findById(request.getProductItemId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+
+            if (!productItem.getProduct().getId().equals(productId)) {
+                throw new IllegalArgumentException("요청한 상품과 재입고하려는 상품이 일치하지 않습니다.");
+            }
+
+            productItem.increaseStock(request.getQuantity());
+            productItemRepository.save(productItem);
+        }
+
+        return getProduct(productId);
+    }
+
+    private ProductResponse generateProductResponse(Product product) {
         List<ProductOption> options = productOptionRepository.findAllByProduct(product);
         return ProductResponse.of(product, options);
     }

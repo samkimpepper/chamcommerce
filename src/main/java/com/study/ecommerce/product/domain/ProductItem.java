@@ -28,4 +28,16 @@ public class ProductItem {
     private int stock;
 
     private int price;
+
+    public void increaseStock(int quantity) {
+        this.stock += quantity;
+    }
+
+    public void decreaseStock(int quantity) {
+        int restStock = this.stock - quantity;
+        if (restStock < 0) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
+        this.stock = restStock;
+    }
 }

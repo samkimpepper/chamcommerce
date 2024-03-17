@@ -8,6 +8,7 @@ import com.study.ecommerce.order.dto.OrderResponse;
 import com.study.ecommerce.product.domain.ProductItem;
 import com.study.ecommerce.product.domain.ProductItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ProductItemRepository productItemRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public OrderResponse createOrder(OrderCreateRequest request, Long customerId) {
         List<ProductItem> productItems = productItemRepository
@@ -43,6 +45,8 @@ public class OrderService {
         Order order = Order.of(customerId, orderItems);
 
         orderRepository.save(order);
+
+        applicationEventPublisher.publishEvent(new OrderCreatedEvent(orderItems));
 
         return OrderResponse.of(order);
     }
