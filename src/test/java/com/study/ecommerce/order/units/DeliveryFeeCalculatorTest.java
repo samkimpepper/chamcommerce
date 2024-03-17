@@ -61,13 +61,10 @@ public class DeliveryFeeCalculatorTest {
                 product2.getId(),
                 ProductFixture.defaultProductItemCreateRequest(
                         List.of(product2.getOptions().get(0).getDetails().get(0).getId())));
-
-
-
     }
 
     @Test
-    public void MultipleDeliveryFeesForDifferentSellers() {
+    public void multipleDeliveryFeesForDifferentSellers() {
         // given
         OrderResponse orderResponse = orderService.createOrder(
                 new OrderCreateRequest(
@@ -86,7 +83,7 @@ public class DeliveryFeeCalculatorTest {
     }
 
     @Test
-    public void SingleDeliveryFeeForSameSeller() {
+    public void singleDeliveryFeeForSameSeller() {
         // given
         OrderResponse orderResponse = orderService.createOrder(
                 new OrderCreateRequest(
@@ -105,7 +102,7 @@ public class DeliveryFeeCalculatorTest {
     }
 
     @Test
-    public void zeroDeliveryFeeForOver100000() {
+    public void zeroDeliveryFeeForOver50000() {
         // given
         OrderResponse orderResponse = orderService.createOrder(
                 new OrderCreateRequest(

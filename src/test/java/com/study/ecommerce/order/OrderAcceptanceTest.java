@@ -5,7 +5,6 @@ import com.study.ecommerce.order.domain.OrderStatus;
 import com.study.ecommerce.order.dto.OrderResponse;
 import com.study.ecommerce.product.ProductFixture;
 import com.study.ecommerce.product.ProductSteps;
-import com.study.ecommerce.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
