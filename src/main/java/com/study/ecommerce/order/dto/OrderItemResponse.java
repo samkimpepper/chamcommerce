@@ -9,21 +9,21 @@ import java.util.List;
 
 @Getter
 @Builder
-public class OrderOptionGroupResponse {
+public class OrderItemResponse {
     private String productName;
     private String optionName;
     private int quantity;
     private int price;
     private int totalPrice;
 
-    public static List<OrderOptionGroupResponse> listOf(OrderItems orderItems) {
+    public static List<OrderItemResponse> listOf(OrderItems orderItems) {
         return orderItems.stream()
-                .map(OrderOptionGroupResponse::of)
+                .map(OrderItemResponse::of)
                 .toList();
     }
 
-    public static OrderOptionGroupResponse of(OrderItem orderItem) {
-        return OrderOptionGroupResponse.builder()
+    public static OrderItemResponse of(OrderItem orderItem) {
+        return OrderItemResponse.builder()
                 .productName(orderItem.getProductName())
                 .optionName(orderItem.getOptionName())
                 .quantity(orderItem.getQuantity())

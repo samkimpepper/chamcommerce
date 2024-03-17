@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class OrderOptionGroupRequest {
+public class OrderItemRequest {
     private Long productOptionGroupId;
     private int quantity;
 

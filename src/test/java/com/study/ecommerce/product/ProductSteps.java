@@ -46,9 +46,9 @@ public class ProductSteps {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(ProductFixture.defaultOptionGroupCreateRequest(detailIds))
+                .body(ProductFixture.defaultProductItemCreateRequest(detailIds))
                 .auth().oauth2(accessToken)
-                .when().post("/products/{productId}/option-groups", productId)
+                .when().post("/products/{productId}/item", productId)
                 .then().log().all().extract().as(ProductResponse.class);
     }
 

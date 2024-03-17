@@ -1,4 +1,4 @@
-package com.study.ecommerce.order;
+package com.study.ecommerce.order.event;
 
 
 import com.study.ecommerce.order.domain.OrderItem;

@@ -34,6 +34,9 @@ public class Order {
     @Builder.Default
     private OrderItems orderItems = new OrderItems();
 
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
     public int getTotalPrice() {
         return orderItems.getTotalPrice();
     }
@@ -46,9 +49,11 @@ public class Order {
         this.orderItems.setOrderOptionGroups(orderItems);
     }
 
-    public static Order of(Long customerId, List<OrderItem> orderItems) {
+    public static Order of(Long customerId, List<OrderItem> orderItems, String paymentMethod) {
         Order order = Order.builder()
                 .customerId(customerId)
+                .paymentMethod(PaymentMethod.valueOf(paymentMethod))
+                .status((paymentMethod.equals(PaymentMethod.DEFERRED.name())) ? OrderStatus.WAITING_FOR_PAYMENT : OrderStatus.ORDERED)
                 .orderedAt(LocalDateTime.now())
                 .build();
 

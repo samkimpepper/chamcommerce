@@ -3,8 +3,10 @@ package com.study.ecommerce.order;
 import com.study.ecommerce.order.domain.Order;
 import com.study.ecommerce.order.domain.OrderItem;
 import com.study.ecommerce.order.dto.OrderCreateRequest;
-import com.study.ecommerce.order.dto.OrderOptionGroupRequest;
+import com.study.ecommerce.order.dto.OrderItemRequest;
 import com.study.ecommerce.order.dto.OrderResponse;
+import com.study.ecommerce.order.event.OrderCancelledEvent;
+import com.study.ecommerce.order.event.OrderCreatedEvent;
 import com.study.ecommerce.product.domain.ProductItem;
 import com.study.ecommerce.product.domain.ProductItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,7 @@ public class OrderService {
         List<ProductItem> productItems = productItemRepository
                 .findAllById(request.getOrderOptionGroups()
                 .stream()
-                .map(OrderOptionGroupRequest::getProductOptionGroupId)
+                .map(OrderItemRequest::getProductOptionGroupId)
                 .collect(Collectors.toList()));
 
         Map<Long, ProductItem> productOptionGroupMap = productItems.stream()
@@ -37,12 +39,12 @@ public class OrderService {
 
         List<OrderItem> orderItems = request.getOrderOptionGroups()
                 .stream()
-                .map(orderOptionGroupRequest -> orderOptionGroupRequest.toEntity(
-                        productOptionGroupMap.get(orderOptionGroupRequest.getProductOptionGroupId())
+                .map(orderItemRequest -> orderItemRequest.toEntity(
+                        productOptionGroupMap.get(orderItemRequest.getProductOptionGroupId())
                 ))
                 .collect(Collectors.toList());
 
-        Order order = Order.of(customerId, orderItems);
+        Order order = Order.of(customerId, orderItems, request.getPaymentMethod());
 
         orderRepository.save(order);
 
@@ -57,6 +59,8 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
 
         order.cancel();
+
+        applicationEventPublisher.publishEvent(new OrderCancelledEvent(order.getOrderItems()));
 
         return OrderResponse.of(order);
     }

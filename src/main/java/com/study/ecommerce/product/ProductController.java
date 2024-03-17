@@ -27,7 +27,7 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.createProductInfo(request, member.getId()));
     }
 
-    @PostMapping("/products/{productId}/option-groups")
+    @PostMapping("/products/{productId}/item")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ProductResponse> createProductItem(
             @PathVariable("productId") Long productId,

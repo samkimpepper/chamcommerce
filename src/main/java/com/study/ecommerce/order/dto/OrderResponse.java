@@ -17,7 +17,7 @@ public class OrderResponse {
     private int deliveryFee;
     private String status;
     private LocalDateTime orderedAt;
-    private List<OrderOptionGroupResponse> orderOptions;
+    private List<OrderItemResponse> orderOptions;
 
     public static OrderResponse of(Order order) {
         return OrderResponse.builder()
@@ -28,7 +28,7 @@ public class OrderResponse {
                 .deliveryFee(order.getDeliveryFee())
                 .status(order.getStatus().name())
                 .orderedAt(order.getOrderedAt())
-                .orderOptions(OrderOptionGroupResponse.listOf(order.getOrderItems()))
+                .orderOptions(OrderItemResponse.listOf(order.getOrderItems()))
                 .build();
     }
 }

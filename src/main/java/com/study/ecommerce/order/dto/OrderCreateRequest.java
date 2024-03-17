@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class OrderCreateRequest {
-    List<OrderOptionGroupRequest> orderOptionGroups;
+    List<OrderItemRequest> orderOptionGroups;
     private String address;
+    private String paymentMethod;
 }

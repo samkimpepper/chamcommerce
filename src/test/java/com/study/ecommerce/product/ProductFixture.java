@@ -38,7 +38,7 @@ public class ProductFixture {
         return new OptionCreateRequest("사이즈", details);
     }
 
-    public static ProductItemCreateRequest defaultOptionGroupCreateRequest(List<Long> detailIds) {
-        return new ProductItemCreateRequest(detailIds, 15000, 50);
+    public static ProductItemCreateRequest defaultProductItemCreateRequest(List<Long> detailIds) {
+        return new ProductItemCreateRequest(detailIds, PRICE, STOCK);
     }
 }
