@@ -15,10 +15,13 @@ public class OrderItems implements Iterable<OrderItem> {
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
-
     @Override
     public Iterator<OrderItem> iterator() {
         return orderItems.iterator();
+    }
+
+    public OrderItem get(int index) {
+        return orderItems.get(index);
     }
 
     public Stream<OrderItem> stream() {

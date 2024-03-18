@@ -7,6 +7,7 @@ import com.study.ecommerce.order.dto.OrderItemRequest;
 import com.study.ecommerce.order.dto.OrderResponse;
 import com.study.ecommerce.order.event.OrderCancelledEvent;
 import com.study.ecommerce.order.event.OrderCreatedEvent;
+import com.study.ecommerce.order.event.OrderPlacedEvent;
 import com.study.ecommerce.product.domain.ProductItem;
 import com.study.ecommerce.product.domain.ProductItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +35,13 @@ public class OrderService {
                 .map(OrderItemRequest::getProductOptionGroupId)
                 .collect(Collectors.toList()));
 
-        Map<Long, ProductItem> productOptionGroupMap = productItems.stream()
+        Map<Long, ProductItem> productItemById = productItems.stream()
                 .collect(Collectors.toMap(ProductItem::getId, Function.identity()));
 
         List<OrderItem> orderItems = request.getOrderOptionGroups()
                 .stream()
                 .map(orderItemRequest -> orderItemRequest.toEntity(
-                        productOptionGroupMap.get(orderItemRequest.getProductOptionGroupId())
+                        productItemById.get(orderItemRequest.getProductOptionGroupId())
                 ))
                 .collect(Collectors.toList());
 
@@ -48,7 +49,8 @@ public class OrderService {
 
         orderRepository.save(order);
 
-        applicationEventPublisher.publishEvent(new OrderCreatedEvent(orderItems));
+        applicationEventPublisher.publishEvent(new OrderCreatedEvent(order, orderItems));
+        applicationEventPublisher.publishEvent(new OrderPlacedEvent(order, orderItems));
 
         return OrderResponse.of(order);
     }
@@ -60,7 +62,7 @@ public class OrderService {
 
         order.cancel();
 
-        applicationEventPublisher.publishEvent(new OrderCancelledEvent(order.getOrderItems()));
+        applicationEventPublisher.publishEvent(new OrderCancelledEvent(order, order.getOrderItems()));
 
         return OrderResponse.of(order);
     }
