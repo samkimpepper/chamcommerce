@@ -2,6 +2,7 @@ package com.study.ecommerce.order.dto;
 
 import com.study.ecommerce.order.domain.OrderItem;
 import com.study.ecommerce.order.domain.OrderItems;
+import com.study.ecommerce.order.domain.SellerOrderItems;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,6 +18,12 @@ public class OrderItemResponse {
     private int totalPrice;
 
     public static List<OrderItemResponse> listOf(OrderItems orderItems) {
+        return orderItems.stream()
+                .map(OrderItemResponse::of)
+                .toList();
+    }
+
+    public static List<OrderItemResponse> listOf(SellerOrderItems orderItems) {
         return orderItems.stream()
                 .map(OrderItemResponse::of)
                 .toList();

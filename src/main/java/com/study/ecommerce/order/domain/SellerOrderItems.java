@@ -9,17 +9,13 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Embeddable
-public class OrderItems implements Iterable<OrderItem> {
-    @OneToMany(mappedBy = "order", orphanRemoval = true)
+public class SellerOrderItems implements Iterable<OrderItem> {
+    @OneToMany(mappedBy = "sellerOrder", orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Override
     public Iterator<OrderItem> iterator() {
         return orderItems.iterator();
-    }
-
-    public OrderItem get(int index) {
-        return orderItems.get(index);
     }
 
     public Stream<OrderItem> stream() {
@@ -48,9 +44,5 @@ public class OrderItems implements Iterable<OrderItem> {
         return orderItems.stream()
                 .mapToInt(OrderItem::getQuantity)
                 .sum();
-    }
-
-    public int getTotalDeliveryFee() {
-        return 0;
     }
 }

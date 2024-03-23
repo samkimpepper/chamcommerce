@@ -8,6 +8,8 @@ import com.study.ecommerce.order.dto.OrderResponse;
 import com.study.ecommerce.order.event.OrderCancelledEvent;
 import com.study.ecommerce.order.event.OrderCreatedEvent;
 import com.study.ecommerce.order.event.OrderPlacedEvent;
+import com.study.ecommerce.order.repository.OrderItemRepository;
+import com.study.ecommerce.order.repository.OrderRepository;
 import com.study.ecommerce.product.domain.ProductItem;
 import com.study.ecommerce.product.domain.ProductItemRepository;
 import lombok.RequiredArgsConstructor;

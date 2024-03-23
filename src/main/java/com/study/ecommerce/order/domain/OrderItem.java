@@ -17,8 +17,11 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SellerOrder sellerOrder;
 
     @ManyToOne
     private ProductItem productItem;

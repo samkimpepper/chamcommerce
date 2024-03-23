@@ -1,10 +1,12 @@
 package com.study.ecommerce.order.domain;
 
+import com.study.ecommerce.delivery.Delivery;
 import com.study.ecommerce.order.DeliveryFeeCalculator;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "orders")
@@ -37,6 +39,10 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
+    @OneToMany(mappedBy = "order")
+    @Builder.Default
+    private List<Delivery> deliveries = new ArrayList<>();
+
     public int getTotalPrice() {
         return orderItems.getTotalPrice();
     }
@@ -46,7 +52,7 @@ public class Order {
     }
 
     public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems.setOrderOptionGroups(orderItems);
+        this.orderItems.setOrderItems(orderItems);
     }
 
     public static Order of(Long customerId, List<OrderItem> orderItems, String paymentMethod) {

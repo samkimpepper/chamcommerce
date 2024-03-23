@@ -1,4 +1,4 @@
-package com.study.ecommerce.order;
+package com.study.ecommerce.order.repository;
 
 import com.study.ecommerce.order.domain.Order;
 import org.springframework.data.jpa.repository.JpaRepository;

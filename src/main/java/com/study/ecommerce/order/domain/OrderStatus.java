@@ -1,15 +1,7 @@
 package com.study.ecommerce.order.domain;
 
 public enum OrderStatus {
-    WAITING_FOR_PAYMENT, ORDERED, SHIPPING, DELIVERED, CANCELLED;
-
-    public boolean isShipping() {
-        return this == SHIPPING;
-    }
-
-    public boolean isDelivered() {
-        return this == DELIVERED;
-    }
+    WAITING_FOR_PAYMENT, ORDERED, COMPLETED, CANCELLED;
 
     public boolean isCanceled() {
         return this == CANCELLED;
