@@ -19,6 +19,7 @@ public class OrderItemRequest {
 
         return OrderItem.builder()
                 .productItem(productItem)
+                .sellerOrder(null)
                 .quantity(quantity)
                 .price(productItem.getPrice())
                 .productName(productItem.getProduct().getName())

@@ -46,6 +46,11 @@ public class SellerOrder {
                 .build();
 
         sellerOrder.orderItems.setOrderItems(orderItems);
+        orderItems.forEach(orderItem -> orderItem.setSellerOrder(sellerOrder));
         return sellerOrder;
+    }
+
+    public void cancel() {
+        this.status = SellerOrderStatus.CANCELLED;
     }
 }

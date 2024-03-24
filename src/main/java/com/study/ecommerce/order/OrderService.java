@@ -1,5 +1,7 @@
 package com.study.ecommerce.order;
 
+import com.study.ecommerce.member.DeliveryAddress;
+import com.study.ecommerce.member.DeliveryAddressRepository;
 import com.study.ecommerce.order.domain.Order;
 import com.study.ecommerce.order.domain.OrderItem;
 import com.study.ecommerce.order.dto.OrderCreateRequest;
@@ -13,6 +15,7 @@ import com.study.ecommerce.order.repository.OrderRepository;
 import com.study.ecommerce.product.domain.ProductItem;
 import com.study.ecommerce.product.domain.ProductItemRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +27,18 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
     private final ProductItemRepository productItemRepository;
+    private final DeliveryAddressRepository deliveryAddressRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
+    @Transactional
     public OrderResponse createOrder(OrderCreateRequest request, Long customerId) {
+        DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(request.getDeliveryAddressId())
+                .orElseThrow(() -> new IllegalArgumentException("배송지가 존재하지 않습니다."));
+
         List<ProductItem> productItems = productItemRepository
                 .findAllById(request.getOrderOptionGroups()
                 .stream()
@@ -47,8 +55,8 @@ public class OrderService {
                 ))
                 .collect(Collectors.toList());
 
-        Order order = Order.of(customerId, orderItems, request.getPaymentMethod());
-
+        Order order = Order.of(customerId, orderItems, request.getPaymentMethod(), deliveryAddress);
+        orderItems.forEach(orderItem -> orderItem.setOrder(order));
         orderRepository.save(order);
 
         applicationEventPublisher.publishEvent(new OrderCreatedEvent(order, orderItems));
@@ -59,12 +67,20 @@ public class OrderService {
 
     @Transactional
     public OrderResponse cancelOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdWithOrderItems(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
 
         order.cancel();
 
         applicationEventPublisher.publishEvent(new OrderCancelledEvent(order, order.getOrderItems()));
+
+        return OrderResponse.of(order);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderResponse getOrderDetail(Long orderId) {
+        Order order = orderRepository.findByIdWithOrderItems(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
 
         return OrderResponse.of(order);
     }

@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 @Embeddable
 public class ProductItems implements Iterable<ProductItem> {
     @OneToMany(mappedBy = "product")
-    @Builder.Default
     private List<ProductItem> productItems = new ArrayList<>();
 
 

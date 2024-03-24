@@ -1,6 +1,7 @@
 package com.study.ecommerce.order.domain;
 
 import com.study.ecommerce.delivery.Delivery;
+import com.study.ecommerce.member.DeliveryAddress;
 import com.study.ecommerce.order.DeliveryFeeCalculator;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,6 +40,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
+    @OneToOne
+    private DeliveryAddress deliveryAddress;
+
     @OneToMany(mappedBy = "order")
     @Builder.Default
     private List<Delivery> deliveries = new ArrayList<>();
@@ -55,9 +59,10 @@ public class Order {
         this.orderItems.setOrderItems(orderItems);
     }
 
-    public static Order of(Long customerId, List<OrderItem> orderItems, String paymentMethod) {
+    public static Order of(Long customerId, List<OrderItem> orderItems, String paymentMethod, DeliveryAddress deliveryAddress) {
         Order order = Order.builder()
                 .customerId(customerId)
+                .deliveryAddress(deliveryAddress)
                 .paymentMethod(PaymentMethod.valueOf(paymentMethod))
                 .status((paymentMethod.equals(PaymentMethod.DEFERRED.name())) ? OrderStatus.WAITING_FOR_PAYMENT : OrderStatus.ORDERED)
                 .orderedAt(LocalDateTime.now())

@@ -9,6 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderCreateRequest {
     List<OrderItemRequest> orderOptionGroups;
-    private String address;
+    private Long deliveryAddressId;
     private String paymentMethod;
 }

@@ -1,16 +1,20 @@
 package com.study.ecommerce.order.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Embeddable
 public class OrderItems implements Iterable<OrderItem> {
-    @OneToMany(mappedBy = "order", orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Override
@@ -52,5 +56,11 @@ public class OrderItems implements Iterable<OrderItem> {
 
     public int getTotalDeliveryFee() {
         return 0;
+    }
+
+    public Set<SellerOrder> getSellerOrders() {
+        return orderItems.stream()
+                .map(OrderItem::getSellerOrder)
+                .collect(Collectors.toSet());
     }
 }

@@ -1,8 +1,10 @@
 package com.study.ecommerce.order.units;
 
+import com.study.ecommerce.member.DeliveryAddressService;
 import com.study.ecommerce.member.Member;
 import com.study.ecommerce.member.MemberFixture;
 import com.study.ecommerce.member.MemberService;
+import com.study.ecommerce.member.dto.DeliveryAddressResponse;
 import com.study.ecommerce.order.OrderService;
 import com.study.ecommerce.order.domain.OrderStatus;
 import com.study.ecommerce.order.dto.OrderCreateRequest;
@@ -32,11 +34,15 @@ public class OrderServiceTest {
     private ProductService productService;
 
     @Autowired
+    private DeliveryAddressService deliveryAddressService;
+
+    @Autowired
     private MemberService memberService;
 
     Member customer;
     Member seller;
     ProductResponse product;
+    DeliveryAddressResponse deliveryAddress;
     int stock;
 
     @BeforeEach
@@ -50,6 +56,7 @@ public class OrderServiceTest {
                 ProductFixture.defaultProductItemCreateRequest(
                         List.of(product.getOptions().get(0).getDetails().get(0).getId())));
         stock = product.getTotalStock();
+        deliveryAddress = deliveryAddressService.createDeliveryAddress(customer.getId(), MemberFixture.createDefaultDeliveryAddress());
     }
 
     @Test
@@ -57,7 +64,7 @@ public class OrderServiceTest {
         // given
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(
                 List.of(new OrderItemRequest(product.getOptionGroups().get(0).getId(), 1)),
-                "서울시 강남구",
+                deliveryAddress.getId(),
                 "INSTANT");
 
         // when
@@ -75,7 +82,7 @@ public class OrderServiceTest {
         // given
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(
                 List.of(new OrderItemRequest(product.getOptionGroups().get(0).getId(), 1)),
-                "서울시 강남구",
+                deliveryAddress.getId(),
                 "INSTANT");
         OrderResponse order = orderService.createOrder(orderCreateRequest, customer.getId());
         product = productService.getProduct(product.getId());

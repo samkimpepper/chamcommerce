@@ -1,8 +1,7 @@
 package com.study.ecommerce.order.units;
 
-import com.study.ecommerce.member.Member;
-import com.study.ecommerce.member.MemberFixture;
-import com.study.ecommerce.member.MemberService;
+import com.study.ecommerce.member.*;
+import com.study.ecommerce.member.dto.DeliveryAddressResponse;
 import com.study.ecommerce.order.repository.OrderRepository;
 import com.study.ecommerce.order.OrderService;
 import com.study.ecommerce.order.domain.Order;
@@ -36,6 +35,9 @@ public class DeliveryFeeCalculatorTest {
     private MemberService memberService;
 
     @Autowired
+    private DeliveryAddressService deliveryAddressService;
+
+    @Autowired
     private OrderRepository orderRepository;
 
     Member customer;
@@ -43,6 +45,7 @@ public class DeliveryFeeCalculatorTest {
     Member seller2;
     ProductResponse product;
     ProductResponse product2;
+    DeliveryAddressResponse deliveryAddress;
 
     @BeforeEach
     public void setUp() {
@@ -61,6 +64,8 @@ public class DeliveryFeeCalculatorTest {
                 product2.getId(),
                 ProductFixture.defaultProductItemCreateRequest(
                         List.of(product2.getOptions().get(0).getDetails().get(0).getId())));
+
+        deliveryAddress = deliveryAddressService.createDeliveryAddress(customer.getId(), MemberFixture.createDefaultDeliveryAddress());
     }
 
     @Test
@@ -70,7 +75,7 @@ public class DeliveryFeeCalculatorTest {
                 new OrderCreateRequest(
                         List.of(new OrderItemRequest(product.getOptionGroups().get(0).getId(), 1),
                                 new OrderItemRequest(product2.getOptionGroups().get(0).getId(), 1)),
-                        "서울시 강남구",
+                        deliveryAddress.getId(),
                         "INSTANT"),
                 customer.getId());
 
@@ -89,7 +94,7 @@ public class DeliveryFeeCalculatorTest {
                 new OrderCreateRequest(
                         List.of(new OrderItemRequest(product.getOptionGroups().get(0).getId(), 1),
                                 new OrderItemRequest(product.getOptionGroups().get(0).getId(), 1)),
-                        "서울시 강남구",
+                        deliveryAddress.getId(),
                         "INSTANT"),
                 customer.getId());
 
@@ -107,7 +112,7 @@ public class DeliveryFeeCalculatorTest {
         OrderResponse orderResponse = orderService.createOrder(
                 new OrderCreateRequest(
                         List.of(new OrderItemRequest(product.getOptionGroups().get(0).getId(), 4)),
-                        "서울시 강남구",
+                        deliveryAddress.getId(),
                         "INSTANT"),
                 customer.getId());
 
