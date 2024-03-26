@@ -1,17 +1,26 @@
 package com.study.ecommerce.order.event;
 
+import com.study.ecommerce.delivery.DeliveryService;
+import com.study.ecommerce.delivery.domain.Delivery;
 import com.study.ecommerce.notification.NotificationService;
+import com.study.ecommerce.order.OrderService;
 import com.study.ecommerce.order.SellerOrderService;
+import com.study.ecommerce.order.domain.Order;
 import com.study.ecommerce.order.domain.OrderItem;
 import com.study.ecommerce.order.domain.OrderItems;
 import com.study.ecommerce.order.domain.SellerOrder;
+import com.study.ecommerce.order.dto.SellerOrderResponse;
 import com.study.ecommerce.order.repository.OrderItemRepository;
+import com.study.ecommerce.order.repository.OrderRepository;
+import com.study.ecommerce.order.repository.SellerOrderRepository;
 import com.study.ecommerce.product.domain.ProductItem;
 import com.study.ecommerce.product.domain.ProductItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -28,6 +37,8 @@ public class OrderEventHandler {
     private final ProductItemRepository productItemRepository;
     private final NotificationService notificationService;
     private final SellerOrderService sellerOrderService;
+    private final OrderService orderService;
+    private final DeliveryService deliveryService;
 
     @TransactionalEventListener
     public void onOrderCreated(OrderCreatedEvent event) {
@@ -67,9 +78,22 @@ public class OrderEventHandler {
                         .forEach(entry -> {
                             Long sellerId = entry.getKey();
                             List<OrderItem> orderItems = entry.getValue();
-                            sellerOrderService.createSellerOrder(sellerId, orderItems);
+                            sellerOrderService.createSellerOrder(sellerId, event.getOrder(), orderItems);
                         });
 
         notificationService.sendNotifications(event.toNotifications());
+    }
+
+    @TransactionalEventListener
+    public void onOrderShipped(OrderShippedEvent event) {
+        SellerOrder sellerOrder = event.getSellerOrder();
+        Order order = sellerOrder.getOrder();
+
+        Delivery delivery = deliveryService.register(order, sellerOrder);
+
+        orderService.registerDelivery(order, delivery);
+        sellerOrderService.registerDelivery(sellerOrder, delivery);
+
+        notificationService.sendNotification(event.toNotification(delivery));
     }
 }

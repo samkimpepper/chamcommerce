@@ -50,6 +50,12 @@ public class OrderSteps {
                 .then().log().all().extract().jsonPath().getList(".", SellerOrderResponse.class);
     }
 
-
+    public static SellerOrderResponse shipOrder(Long sellerOrderId, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().put("/seller-order/" + sellerOrderId + "/ship")
+                .then().log().all().extract().as(SellerOrderResponse.class);
+    }
 
 }

@@ -32,6 +32,10 @@ public class AcceptanceTest {
 
     protected static String ACCESS_TOKEN_SELLER2;
 
+    protected static String ACCESS_TOKEN_DELIVERY_WORKER;
+
+    protected static String ACCESS_TOKEN_ADMIN;
+
     @BeforeEach
     public void setUp() {
         databaseCleanup.execute();
@@ -45,5 +49,11 @@ public class AcceptanceTest {
 
         memberService.signUp(MemberFixture.createSeller2());
         ACCESS_TOKEN_SELLER2 = MemberSteps.requestToLogin(MemberFixture.SELLER2_EMAIL, MemberFixture.PASSWORD).getAccessToken();
+
+        memberService.signUp(MemberFixture.createDeliveryWorker());
+        ACCESS_TOKEN_DELIVERY_WORKER = MemberSteps.requestToLogin(MemberFixture.DELIVERY_WORKER_EMAIL, MemberFixture.PASSWORD).getAccessToken();
+
+        memberService.signUp(MemberFixture.createAdmin());
+        ACCESS_TOKEN_ADMIN = MemberSteps.requestToLogin(MemberFixture.ADMIN_EMAIL, MemberFixture.PASSWORD).getAccessToken();
     }
 }

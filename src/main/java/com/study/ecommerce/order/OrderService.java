@@ -1,5 +1,6 @@
 package com.study.ecommerce.order;
 
+import com.study.ecommerce.delivery.domain.Delivery;
 import com.study.ecommerce.member.DeliveryAddress;
 import com.study.ecommerce.member.DeliveryAddressRepository;
 import com.study.ecommerce.order.domain.Order;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -81,6 +83,22 @@ public class OrderService {
     public OrderResponse getOrderDetail(Long orderId) {
         Order order = orderRepository.findByIdWithOrderItems(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+
+        return OrderResponse.of(order);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void registerDelivery(Order order, Delivery delivery) {
+        order.registerDelivery(delivery);
+        orderRepository.save(order);
+    }
+
+    @Transactional
+    public OrderResponse completeOrder(Long orderId) {
+        Order order = orderRepository.findByIdWithOrderItems(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+
+        order.complete();
 
         return OrderResponse.of(order);
     }

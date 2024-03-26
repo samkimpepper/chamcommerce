@@ -1,6 +1,6 @@
 package com.study.ecommerce.order.domain;
 
-import com.study.ecommerce.delivery.Delivery;
+import com.study.ecommerce.delivery.domain.Delivery;
 import com.study.ecommerce.member.DeliveryAddress;
 import com.study.ecommerce.order.DeliveryFeeCalculator;
 import jakarta.persistence.*;
@@ -9,6 +9,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity(name = "orders")
 @Getter
@@ -26,8 +27,12 @@ public class Order {
 
     private LocalDateTime cancelledAt;
 
+    private String productNames;
+
     @Setter
     private int deliveryFee;
+
+    private int totalDeliveryCount;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
@@ -62,6 +67,7 @@ public class Order {
     public static Order of(Long customerId, List<OrderItem> orderItems, String paymentMethod, DeliveryAddress deliveryAddress) {
         Order order = Order.builder()
                 .customerId(customerId)
+                .productNames(orderItems.get(0).getProductName() + " 외 " + (orderItems.size() - 1) + "건")
                 .deliveryAddress(deliveryAddress)
                 .paymentMethod(PaymentMethod.valueOf(paymentMethod))
                 .status((paymentMethod.equals(PaymentMethod.DEFERRED.name())) ? OrderStatus.WAITING_FOR_PAYMENT : OrderStatus.ORDERED)
@@ -70,6 +76,10 @@ public class Order {
 
         order.setOrderItems(orderItems);
         order.setDeliveryFee(DeliveryFeeCalculator.calculate(order.getOrderItems()));
+
+        order.totalDeliveryCount = (int) orderItems.stream()
+                .collect(Collectors.groupingBy(orderItem -> orderItem.getProductItem().getProduct().getSellerId()))
+                .size();
 
         return order;
     }
@@ -81,5 +91,24 @@ public class Order {
 
         this.status = OrderStatus.CANCELLED;
         this.cancelledAt = LocalDateTime.now();
+    }
+
+    public void complete() {
+        if (!status.isDelivered()) {
+            throw new IllegalStateException("배송이 완료되지 않은 주문은 완료가 불가능합니다.");
+        }
+
+        this.status = OrderStatus.DELIVERED;
+    }
+
+    public void registerDelivery(Delivery delivery) {
+        this.deliveries.add(delivery);
+        this.status = OrderStatus.DELIVERING;
+    }
+
+    public void completeDelivery() {
+        if (deliveries.size() == totalDeliveryCount && deliveries.stream().allMatch(Delivery::isDelivered)) {
+            this.status = OrderStatus.DELIVERED;
+        }
     }
 }

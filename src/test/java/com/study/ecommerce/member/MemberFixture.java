@@ -12,6 +12,10 @@ public class MemberFixture {
     public static final String SELLER_EMAIL = "seller@seller.com";
     public static final String SELLER2_EMAIL = "seller2@seller.com";
 
+    public static final String DELIVERY_WORKER_EMAIL = "delivery@delivery.com";
+
+    public static final String ADMIN_EMAIL = "admin@admin.com";
+
     public static final String postCode = "12345";
 
     public static final String roadAddress = "서울시 강남구 역삼동";
@@ -32,12 +36,12 @@ public class MemberFixture {
         return new SignupRequest(SELLER2_EMAIL, PASSWORD, "ROLE_SELLER");
     }
 
-    public static Member createAdmin() {
-        return Member.builder()
-                .email("admin@admin.com")
-                .password("password")
-                .roles(Set.of(Role.ROLE_ADMIN))
-                .build();
+    public static SignupRequest createAdmin() {
+        return new SignupRequest(ADMIN_EMAIL, PASSWORD, "ROLE_ADMIN");
+    }
+
+    public static SignupRequest createDeliveryWorker() {
+        return new SignupRequest(DELIVERY_WORKER_EMAIL, PASSWORD, "ROLE_DELIVERY");
     }
 
     public static DeliveryAddressCreateRequest createDefaultDeliveryAddress() {

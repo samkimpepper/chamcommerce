@@ -3,6 +3,8 @@ package com.study.ecommerce.member;
 public enum Role {
     ROLE_CUSTOMER,
     ROLE_SELLER,
+
+    ROLE_DELIVERY,
     ROLE_ADMIN;
 
     public static Role fromString(String role) {

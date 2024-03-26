@@ -33,4 +33,10 @@ public class OrderController {
     public ResponseEntity<OrderResponse> showOrderDetail(@PathVariable Long orderId) {
         return ResponseEntity.ok().body(orderService.getOrderDetail(orderId));
     }
+
+    @PutMapping("/orders/{orderId}/complete")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<OrderResponse> completeOrder(@PathVariable Long orderId) {
+        return ResponseEntity.ok().body(orderService.completeOrder(orderId));
+    }
 }

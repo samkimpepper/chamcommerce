@@ -66,4 +66,17 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.getStatus()).isEqualTo(OrderStatus.CANCELLED.toString());
         assertThat(sellerOrderResponse.getStatus()).isEqualTo(SellerOrderStatus.CANCELLED.toString());
     }
+
+    @Test
+    public void shipOrder() {
+        // given
+        OrderSteps.createOrder(Map.of(productItemIds.get(0), 1, productItemIds2.get(0), 1), deliveryAddressId, ACCESS_TOKEN_CUSTOMER);
+
+        // when
+        SellerOrderResponse sellerOrderResponse = OrderSteps.getSellerOrders(ACCESS_TOKEN_SELLER).get(0);
+        SellerOrderResponse response = OrderSteps.shipOrder(sellerOrderResponse.getId(), ACCESS_TOKEN_SELLER);
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(SellerOrderStatus.SHIPPED.toString());
+    }
 }
