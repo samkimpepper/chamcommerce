@@ -58,4 +58,12 @@ public class OrderSteps {
                 .then().log().all().extract().as(SellerOrderResponse.class);
     }
 
+    public static OrderResponse completeOrder(Long orderId, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().put("/orders/" + orderId + "/complete")
+                .then().log().all().extract().as(OrderResponse.class);
+    }
+
 }

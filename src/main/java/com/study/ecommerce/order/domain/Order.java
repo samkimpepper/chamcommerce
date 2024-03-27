@@ -98,7 +98,7 @@ public class Order {
             throw new IllegalStateException("배송이 완료되지 않은 주문은 완료가 불가능합니다.");
         }
 
-        this.status = OrderStatus.DELIVERED;
+        this.status = OrderStatus.COMPLETED;
     }
 
     public void registerDelivery(Delivery delivery) {

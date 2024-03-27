@@ -2,6 +2,7 @@ package com.study.ecommerce.order.event;
 
 import com.study.ecommerce.delivery.DeliveryService;
 import com.study.ecommerce.delivery.domain.Delivery;
+import com.study.ecommerce.member.Member;
 import com.study.ecommerce.notification.NotificationService;
 import com.study.ecommerce.order.OrderService;
 import com.study.ecommerce.order.SellerOrderService;
@@ -13,6 +14,8 @@ import com.study.ecommerce.order.dto.SellerOrderResponse;
 import com.study.ecommerce.order.repository.OrderItemRepository;
 import com.study.ecommerce.order.repository.OrderRepository;
 import com.study.ecommerce.order.repository.SellerOrderRepository;
+import com.study.ecommerce.point.PointService;
+import com.study.ecommerce.point.strategy.PurchasePointStrategy;
 import com.study.ecommerce.product.domain.ProductItem;
 import com.study.ecommerce.product.domain.ProductItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +42,7 @@ public class OrderEventHandler {
     private final SellerOrderService sellerOrderService;
     private final OrderService orderService;
     private final DeliveryService deliveryService;
+    private final PointService pointService;
 
     @TransactionalEventListener
     public void onOrderCreated(OrderCreatedEvent event) {
@@ -95,5 +99,13 @@ public class OrderEventHandler {
         sellerOrderService.registerDelivery(sellerOrder, delivery);
 
         notificationService.sendNotification(event.toNotification(delivery));
+    }
+
+    @TransactionalEventListener
+    public void onOrderCompleted(OrderCompletedEvent event) {
+        Long memberId = event.getMemberId();
+        int amount = event.getTotalAmount();
+
+        pointService.earnPoints(memberId, amount, new PurchasePointStrategy());
     }
 }

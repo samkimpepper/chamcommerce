@@ -28,4 +28,18 @@ public class Member {
     @CollectionTable(name = "member_roles", joinColumns = @JoinColumn(name = "member_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
+
+    @Builder.Default
+    private long points = 0;
+
+    public void earnPoints(long points) {
+        this.points += points;
+    }
+
+    public void usePoints(long points) {
+        if (this.points < points) {
+            throw new IllegalArgumentException("포인트가 부족합니다.");
+        }
+        this.points -= points;
+    }
 }

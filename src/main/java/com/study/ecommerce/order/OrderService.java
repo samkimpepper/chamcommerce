@@ -9,6 +9,7 @@ import com.study.ecommerce.order.dto.OrderCreateRequest;
 import com.study.ecommerce.order.dto.OrderItemRequest;
 import com.study.ecommerce.order.dto.OrderResponse;
 import com.study.ecommerce.order.event.OrderCancelledEvent;
+import com.study.ecommerce.order.event.OrderCompletedEvent;
 import com.study.ecommerce.order.event.OrderCreatedEvent;
 import com.study.ecommerce.order.event.OrderPlacedEvent;
 import com.study.ecommerce.order.repository.OrderItemRepository;
@@ -99,6 +100,8 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
 
         order.complete();
+
+        applicationEventPublisher.publishEvent(new OrderCompletedEvent(order.getCustomerId(), order.getTotalPrice()));
 
         return OrderResponse.of(order);
     }
