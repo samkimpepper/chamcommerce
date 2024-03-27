@@ -32,7 +32,7 @@ public class DeliveryFeeCalculatorTest {
     private ProductService productService;
 
     @Autowired
-    private MemberService memberService;
+    private AuthService authService;
 
     @Autowired
     private DeliveryAddressService deliveryAddressService;
@@ -49,9 +49,9 @@ public class DeliveryFeeCalculatorTest {
 
     @BeforeEach
     public void setUp() {
-        customer = memberService.signUp(MemberFixture.createCustomer());
-        seller = memberService.signUp(MemberFixture.createSeller());
-        seller2 = memberService.signUp(MemberFixture.createSeller2());
+        customer = authService.signUp(MemberFixture.createCustomer());
+        seller = authService.signUp(MemberFixture.createSeller());
+        seller2 = authService.signUp(MemberFixture.createSeller2());
 
         product = productService.createProductInfo(ProductFixture.defaultProductInfoCreateRequest(), seller.getId());
         product = productService.createProductItem(
@@ -76,7 +76,8 @@ public class DeliveryFeeCalculatorTest {
                         List.of(new OrderItemRequest(product.getOptionGroups().get(0).getId(), 1),
                                 new OrderItemRequest(product2.getOptionGroups().get(0).getId(), 1)),
                         deliveryAddress.getId(),
-                        "INSTANT"),
+                        "INSTANT",
+                        0),
                 customer.getId());
 
         // when
@@ -95,7 +96,8 @@ public class DeliveryFeeCalculatorTest {
                         List.of(new OrderItemRequest(product.getOptionGroups().get(0).getId(), 1),
                                 new OrderItemRequest(product.getOptionGroups().get(0).getId(), 1)),
                         deliveryAddress.getId(),
-                        "INSTANT"),
+                        "INSTANT",
+                        0),
                 customer.getId());
 
         // when
@@ -113,7 +115,8 @@ public class DeliveryFeeCalculatorTest {
                 new OrderCreateRequest(
                         List.of(new OrderItemRequest(product.getOptionGroups().get(0).getId(), 4)),
                         deliveryAddress.getId(),
-                        "INSTANT"),
+                        "INSTANT"
+                                ,0),
                 customer.getId());
 
         // when

@@ -52,9 +52,7 @@ public class Order {
     @Builder.Default
     private List<Delivery> deliveries = new ArrayList<>();
 
-    public int getTotalPrice() {
-        return orderItems.getTotalPrice();
-    }
+    private int totalPrice;
 
     public int getTotalQuantity() {
         return orderItems.getTotalQuantity();
@@ -64,10 +62,11 @@ public class Order {
         this.orderItems.setOrderItems(orderItems);
     }
 
-    public static Order of(Long customerId, List<OrderItem> orderItems, String paymentMethod, DeliveryAddress deliveryAddress) {
+    public static Order of(Long customerId, List<OrderItem> orderItems, int totalPrice, String paymentMethod, DeliveryAddress deliveryAddress) {
         Order order = Order.builder()
                 .customerId(customerId)
                 .productNames(orderItems.get(0).getProductName() + " 외 " + (orderItems.size() - 1) + "건")
+                .totalPrice(totalPrice)
                 .deliveryAddress(deliveryAddress)
                 .paymentMethod(PaymentMethod.valueOf(paymentMethod))
                 .status((paymentMethod.equals(PaymentMethod.DEFERRED.name())) ? OrderStatus.WAITING_FOR_PAYMENT : OrderStatus.ORDERED)

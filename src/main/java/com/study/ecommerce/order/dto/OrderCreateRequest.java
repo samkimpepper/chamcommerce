@@ -11,4 +11,5 @@ public class OrderCreateRequest {
     List<OrderItemRequest> orderOptionGroups;
     private Long deliveryAddressId;
     private String paymentMethod;
+    private int pointsToUse;
 }

@@ -1,6 +1,7 @@
 package com.study.ecommerce.point;
 
 import com.study.ecommerce.member.Member;
+import com.study.ecommerce.order.domain.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,9 +33,13 @@ public class PointHistory {
 
     private LocalDateTime expiredAt;
 
-    public static PointHistory of(Long memberId, long amount, PointType type, String description) {
+    @ManyToOne
+    private Order order;
+
+    public static PointHistory of(Long memberId, long amount, PointType type, Order order, String description) {
         return PointHistory.builder()
                 .memberId(memberId)
+                .order(order)
                 .amount(amount)
                 .type(type)
                 .description(description)

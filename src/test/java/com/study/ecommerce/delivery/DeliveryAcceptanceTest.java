@@ -27,7 +27,7 @@ public class DeliveryAcceptanceTest extends AcceptanceTest {
         List<Long> productItemIds = ProductSteps.createProducts(ACCESS_TOKEN_SELLER);
         List<Long> productItemIds2 = ProductSteps.createProducts(ACCESS_TOKEN_SELLER2);
         Long deliveryAddressId = MemberSteps.createDeliveryAddress(ACCESS_TOKEN_CUSTOMER, MemberFixture.createDefaultDeliveryAddress()).getId();
-        orderId = OrderSteps.createOrder(Map.of(productItemIds.get(0), 1, productItemIds2.get(0), 1), deliveryAddressId, ACCESS_TOKEN_CUSTOMER).getId();
+        orderId = OrderSteps.createOrder(Map.of(productItemIds.get(0), 1, productItemIds2.get(0), 1), 0, deliveryAddressId, ACCESS_TOKEN_CUSTOMER).getId();
         sellerOrderId = OrderSteps.getSellerOrders(ACCESS_TOKEN_SELLER).get(0).getId();
         sellerOrderId2 = OrderSteps.getSellerOrders(ACCESS_TOKEN_SELLER2).get(0).getId();
 

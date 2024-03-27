@@ -2,6 +2,7 @@ package com.study.ecommerce.point.event;
 
 import com.study.ecommerce.member.Member;
 import com.study.ecommerce.member.MemberRepository;
+import com.study.ecommerce.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -9,24 +10,16 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 public class PointEventHandler {
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @TransactionalEventListener
     public void onPointEarned(PointEarnedEvent event) {
-        Member member = memberRepository.findById(event.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
-
-        member.earnPoints(event.getPoints());
-        //memberRepository.save(member);
+        memberService.earnPoints(event.getMemberId(), event.getPoints());
     }
 
     @TransactionalEventListener
     public void onPointUsed(PointUsedEvent event) {
-        Member member = memberRepository.findById(event.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
-
-        member.usePoints(event.getPoints());
-        //memberRepository.save(member);
+        memberService.usePoints(event.getMemberId(), event.getPoints());
     }
 
 }

@@ -1,51 +1,37 @@
 package com.study.ecommerce.member;
 
-import com.study.ecommerce.auth.token.JwtTokenProvider;
-import com.study.ecommerce.member.dto.LoginRequest;
-import com.study.ecommerce.member.dto.SignupRequest;
-import com.study.ecommerce.member.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public Member signUp(SignupRequest signupRequest) {
-        if (memberRepository.existsByEmail(signupRequest.getEmail())) {
-            return null;
-        }
+    @Transactional(readOnly = true)
+    public MemberResponse getMemberInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
-        String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
-
-        Member member = Member.builder()
-                .email(signupRequest.getEmail())
-                .password(encodedPassword)
-                .roles(Set.of(Role.valueOf(signupRequest.getRole())))
-                .build();
-
-        return memberRepository.save(member);
+        return MemberResponse.of(member);
     }
 
-    public TokenResponse login(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManagerBuilder.getObject()
-                .authenticate(loginRequest.toAuthentication());
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void earnPoints(Long memberId, long points) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        member.earnPoints(points);
+    }
 
-        String token = jwtTokenProvider.generateToken(authentication);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void usePoints(Long memberId, long points) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
-        return new TokenResponse(token);
+        member.usePoints(points);
     }
 }

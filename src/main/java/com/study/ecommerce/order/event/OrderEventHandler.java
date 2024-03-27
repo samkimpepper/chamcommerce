@@ -70,6 +70,8 @@ public class OrderEventHandler {
 
         sellerOrderService.cancelSellerOrders(orderItems);
 
+        pointService.refundPoints(event.getOrder());
+
         notificationService.sendNotification(event.toNotification());
     }
 
@@ -104,8 +106,9 @@ public class OrderEventHandler {
     @TransactionalEventListener
     public void onOrderCompleted(OrderCompletedEvent event) {
         Long memberId = event.getMemberId();
+        Order order = event.getOrder();
         int amount = event.getTotalAmount();
 
-        pointService.earnPoints(memberId, amount, new PurchasePointStrategy());
+        pointService.earnPoints(memberId, amount, new PurchasePointStrategy(), order);
     }
 }

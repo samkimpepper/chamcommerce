@@ -3,7 +3,7 @@ package com.study.ecommerce.order.units;
 import com.study.ecommerce.member.DeliveryAddressService;
 import com.study.ecommerce.member.Member;
 import com.study.ecommerce.member.MemberFixture;
-import com.study.ecommerce.member.MemberService;
+import com.study.ecommerce.member.AuthService;
 import com.study.ecommerce.member.dto.DeliveryAddressResponse;
 import com.study.ecommerce.order.OrderService;
 import com.study.ecommerce.order.domain.OrderStatus;
@@ -37,7 +37,7 @@ public class OrderServiceTest {
     private DeliveryAddressService deliveryAddressService;
 
     @Autowired
-    private MemberService memberService;
+    private AuthService authService;
 
     Member customer;
     Member seller;
@@ -47,8 +47,8 @@ public class OrderServiceTest {
 
     @BeforeEach
     public void setUp() {
-        customer = memberService.signUp(MemberFixture.createCustomer());
-        seller = memberService.signUp(MemberFixture.createSeller());
+        customer = authService.signUp(MemberFixture.createCustomer());
+        seller = authService.signUp(MemberFixture.createSeller());
 
         product = productService.createProductInfo(ProductFixture.defaultProductInfoCreateRequest(), seller.getId());
         product = productService.createProductItem(
@@ -65,7 +65,8 @@ public class OrderServiceTest {
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(
                 List.of(new OrderItemRequest(product.getOptionGroups().get(0).getId(), 1)),
                 deliveryAddress.getId(),
-                "INSTANT");
+                "INSTANT",
+                0);
 
         // when
         OrderResponse order = orderService.createOrder(orderCreateRequest, customer.getId());
@@ -83,7 +84,8 @@ public class OrderServiceTest {
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(
                 List.of(new OrderItemRequest(product.getOptionGroups().get(0).getId(), 1)),
                 deliveryAddress.getId(),
-                "INSTANT");
+                "INSTANT",
+                0);
         OrderResponse order = orderService.createOrder(orderCreateRequest, customer.getId());
         product = productService.getProduct(product.getId());
         stock = product.getTotalStock();

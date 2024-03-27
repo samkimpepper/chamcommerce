@@ -3,6 +3,8 @@ package com.study.ecommerce.order;
 import com.study.ecommerce.delivery.domain.Delivery;
 import com.study.ecommerce.member.DeliveryAddress;
 import com.study.ecommerce.member.DeliveryAddressRepository;
+import com.study.ecommerce.member.Member;
+import com.study.ecommerce.member.MemberRepository;
 import com.study.ecommerce.order.domain.Order;
 import com.study.ecommerce.order.domain.OrderItem;
 import com.study.ecommerce.order.dto.OrderCreateRequest;
@@ -14,6 +16,8 @@ import com.study.ecommerce.order.event.OrderCreatedEvent;
 import com.study.ecommerce.order.event.OrderPlacedEvent;
 import com.study.ecommerce.order.repository.OrderItemRepository;
 import com.study.ecommerce.order.repository.OrderRepository;
+import com.study.ecommerce.point.PointService;
+import com.study.ecommerce.point.PointUsePolicy;
 import com.study.ecommerce.product.domain.ProductItem;
 import com.study.ecommerce.product.domain.ProductItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +39,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductItemRepository productItemRepository;
     private final DeliveryAddressRepository deliveryAddressRepository;
+    private final PointService pointService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public OrderResponse createOrder(OrderCreateRequest request, Long customerId) {
@@ -58,9 +64,24 @@ public class OrderService {
                 ))
                 .collect(Collectors.toList());
 
-        Order order = Order.of(customerId, orderItems, request.getPaymentMethod(), deliveryAddress);
+        int totalPrice = orderItems.stream()
+                .mapToInt(OrderItem::getTotalPrice)
+                .sum();
+
+        Member member = memberRepository.findById(customerId)
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+        // 쿠폰, 포인트 적용 로직
+        if (request.getPointsToUse() > 0) {
+            PointUsePolicy.isAvailable(member, totalPrice, request.getPointsToUse());
+            totalPrice -= request.getPointsToUse();
+        }
+
+        Order order = Order.of(customerId, orderItems, totalPrice, request.getPaymentMethod(), deliveryAddress);
         orderItems.forEach(orderItem -> orderItem.setOrder(order));
         orderRepository.save(order);
+
+        pointService.usePoints(customerId, totalPrice, request.getPointsToUse(), order);
 
         applicationEventPublisher.publishEvent(new OrderCreatedEvent(order, orderItems));
         applicationEventPublisher.publishEvent(new OrderPlacedEvent(order, orderItems));
@@ -101,7 +122,7 @@ public class OrderService {
 
         order.complete();
 
-        applicationEventPublisher.publishEvent(new OrderCompletedEvent(order.getCustomerId(), order.getTotalPrice()));
+        applicationEventPublisher.publishEvent(new OrderCompletedEvent(order.getCustomerId(), order, order.getTotalPrice()));
 
         return OrderResponse.of(order);
     }

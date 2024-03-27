@@ -33,7 +33,7 @@ public class OrderFlowAcceptanceTest extends AcceptanceTest {
     @Test
     public void testOrderFlow() {
         // when
-        Long orderId = OrderSteps.createOrder(Map.of(productItemIds.get(0), 1, productItemIds2.get(0), 1), deliveryAddressId, ACCESS_TOKEN_CUSTOMER).getId();
+        Long orderId = OrderSteps.createOrder(Map.of(productItemIds.get(0), 1, productItemIds2.get(0), 1), 0, deliveryAddressId, ACCESS_TOKEN_CUSTOMER).getId();
 
         Long sellerOrderId = OrderSteps.getSellerOrders(ACCESS_TOKEN_SELLER).get(0).getId();
         Long sellerOrderId2 = OrderSteps.getSellerOrders(ACCESS_TOKEN_SELLER2).get(0).getId();

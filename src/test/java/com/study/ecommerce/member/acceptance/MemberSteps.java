@@ -1,5 +1,6 @@
 package com.study.ecommerce.member.acceptance;
 
+import com.study.ecommerce.member.MemberResponse;
 import com.study.ecommerce.member.dto.DeliveryAddressCreateRequest;
 import com.study.ecommerce.member.dto.DeliveryAddressResponse;
 import com.study.ecommerce.member.dto.LoginRequest;
@@ -19,6 +20,15 @@ public class MemberSteps {
                 .body(new LoginRequest(email, password))
                 .when().post("/member/login")
                 .then().log().all().extract().as(TokenResponse.class);
+    }
+
+    public static MemberResponse showMemberInfo(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/member/me")
+                .then().log().all().extract().as(MemberResponse.class);
     }
 
     public static DeliveryAddressResponse createDeliveryAddress(String accessToken, DeliveryAddressCreateRequest request) {

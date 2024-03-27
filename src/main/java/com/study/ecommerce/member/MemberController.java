@@ -16,19 +16,25 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
+    private final AuthService authService;
     private final MemberService memberService;
     private final DeliveryAddressService deliveryAddressService;
 
     @PostMapping("/member/signup")
     public ResponseEntity<Void> signUp(@RequestBody SignupRequest signupRequest) {
-        Member member = memberService.signUp(signupRequest);
+        Member member = authService.signUp(signupRequest);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
     @PostMapping("/member/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest loginRequest) {
 
-        return ResponseEntity.ok(memberService.login(loginRequest));
+        return ResponseEntity.ok(authService.login(loginRequest));
+    }
+
+    @GetMapping("/member/me")
+    public ResponseEntity<MemberResponse> showMemberInfo(@AuthenticationPrincipal MemberDetails member) {
+        return ResponseEntity.ok(memberService.getMemberInfo(member.getId()));
     }
 
     @PostMapping("/member/update/delivery-address")

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class OrderSteps {
-    public static OrderResponse createOrder(Map<Long, Integer> productOptionGroupQuantityMap, Long deliveryAddressId, String accessToken) {
+    public static OrderResponse createOrder(Map<Long, Integer> productOptionGroupQuantityMap, int pointsToUse, Long deliveryAddressId, String accessToken) {
         List<OrderItemRequest> orderOptionGroups = List.of(
                 productOptionGroupQuantityMap.entrySet().stream()
                         .map(entry -> new OrderItemRequest(entry.getKey(), entry.getValue()))
@@ -20,7 +20,7 @@ public class OrderSteps {
         return RestAssured
                 .given().log().all()
                 .contentType("application/json")
-                .body(new OrderCreateRequest(orderOptionGroups, deliveryAddressId, "INSTANT"))
+                .body(new OrderCreateRequest(orderOptionGroups, deliveryAddressId, "INSTANT", pointsToUse))
                 .auth().oauth2(accessToken)
                 .when().post("/orders")
                 .then().log().all().extract().as(OrderResponse.class);
