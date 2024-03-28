@@ -1,9 +1,9 @@
 package com.study.ecommerce.point.strategy;
 
-import com.study.ecommerce.point.PointType;
+import com.study.ecommerce.point.domain.PointType;
 
 public class SignupPointStrategy implements PointStrategy {
-    private static final long POINT_AMOUNT = 2000;
+    public static final long POINT_AMOUNT = 2000;
 
     @Override
     public long calculate(long amount) {

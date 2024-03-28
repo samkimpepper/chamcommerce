@@ -1,10 +1,12 @@
 package com.study.ecommerce.point;
 
-import com.study.ecommerce.member.Member;
 import com.study.ecommerce.member.MemberRepository;
 import com.study.ecommerce.order.domain.Order;
+import com.study.ecommerce.point.domain.PointHistory;
+import com.study.ecommerce.point.domain.PointType;
 import com.study.ecommerce.point.event.PointEarnedEvent;
 import com.study.ecommerce.point.event.PointUsedEvent;
+import com.study.ecommerce.point.pointevent.domain.EventParticipation;
 import com.study.ecommerce.point.strategy.PointStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -30,6 +32,14 @@ public class PointService {
         pointHistoryRepository.save(pointHistory);
 
         eventPublisher.publishEvent(new PointEarnedEvent(memberId, points));
+    }
+
+    @Transactional
+    public void earnPoints(Long memberId, long amount, PointType pointType, EventParticipation participation) {
+        PointHistory pointHistory = PointHistory.of(memberId, amount, pointType, participation, participation.getEvent().getDescription() + " 참여");
+        pointHistoryRepository.save(pointHistory);
+
+        eventPublisher.publishEvent(new PointEarnedEvent(memberId, amount));
     }
 
     @Transactional

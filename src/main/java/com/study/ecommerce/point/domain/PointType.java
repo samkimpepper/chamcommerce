@@ -1,4 +1,4 @@
-package com.study.ecommerce.point;
+package com.study.ecommerce.point.domain;
 
 public enum PointType {
     EARN_PURCHASE,

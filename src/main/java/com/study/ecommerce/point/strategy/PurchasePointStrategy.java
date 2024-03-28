@@ -1,6 +1,6 @@
 package com.study.ecommerce.point.strategy;
 
-import com.study.ecommerce.point.PointType;
+import com.study.ecommerce.point.domain.PointType;
 
 public class PurchasePointStrategy implements PointStrategy {
     private static final double POINT_RATE = 0.01;

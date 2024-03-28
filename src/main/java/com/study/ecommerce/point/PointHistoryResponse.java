@@ -1,5 +1,6 @@
 package com.study.ecommerce.point;
 
+import com.study.ecommerce.point.domain.PointHistory;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,6 +1,7 @@
 package com.study.ecommerce.point;
 
 import com.study.ecommerce.order.domain.Order;
+import com.study.ecommerce.point.domain.PointHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

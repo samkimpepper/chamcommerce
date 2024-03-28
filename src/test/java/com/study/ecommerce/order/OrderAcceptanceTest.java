@@ -8,7 +8,6 @@ import com.study.ecommerce.order.domain.OrderStatus;
 import com.study.ecommerce.order.domain.SellerOrderStatus;
 import com.study.ecommerce.order.dto.OrderResponse;
 import com.study.ecommerce.order.dto.SellerOrderResponse;
-import com.study.ecommerce.point.PointHistory;
 import com.study.ecommerce.point.PointHistoryResponse;
 import com.study.ecommerce.point.PointSteps;
 import com.study.ecommerce.product.ProductFixture;
