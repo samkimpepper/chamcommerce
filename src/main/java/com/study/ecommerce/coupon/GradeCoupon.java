@@ -1,8 +1,10 @@
 package com.study.ecommerce.coupon;
 
 import com.study.ecommerce.member.domain.MemberGrade;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.*;
@@ -13,6 +15,8 @@ public class GradeCoupon {
     private final CouponRepository couponRepository;
     private final Map<MemberGrade, List<Coupon>> gradeCoupons = new HashMap<>();
 
+    @PostConstruct
+    @Transactional
     public void initGradeCoupons() {
         saveCoupons(MemberGrade.WHITE, Arrays.asList(
                 Coupon.gradeOf(MemberGrade.WHITE, CouponType.DISCOUNT_PRATE, "5만원 이상 구매 시 3% 할인", 50000, 3),
@@ -42,7 +46,7 @@ public class GradeCoupon {
         ));
     }
 
-    private void saveCoupons(MemberGrade grade, List<Coupon> coupons) {
+    public void saveCoupons(MemberGrade grade, List<Coupon> coupons) {
         List<Coupon> savedCoupons = couponRepository.saveAll(coupons);
         gradeCoupons.put(grade, savedCoupons);
     }

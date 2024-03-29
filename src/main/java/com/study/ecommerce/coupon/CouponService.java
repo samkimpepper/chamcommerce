@@ -15,10 +15,9 @@ public class CouponService {
     private final CouponRepository couponRepository;
     private final MemberCouponRepository memberCouponRepository;
 
-    @PostConstruct
-    public void initGradeCoupons() {
-        gradeCoupon.initGradeCoupons();
-    }
+//    public void initGradeCoupons() {
+//        gradeCoupon.initGradeCoupons();
+//    }
 
     @Transactional
     public void issueCoupon(Long memberId, Coupon coupon) {
