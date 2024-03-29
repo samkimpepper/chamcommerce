@@ -1,6 +1,7 @@
 package com.study.ecommerce.member;
 
 import com.study.ecommerce.auth.token.MemberDetails;
+import com.study.ecommerce.member.domain.Member;
 import com.study.ecommerce.member.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

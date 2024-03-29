@@ -1,6 +1,6 @@
 package com.study.ecommerce.auth.token;
 
-import com.study.ecommerce.member.Member;
+import com.study.ecommerce.member.domain.Member;
 import com.study.ecommerce.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

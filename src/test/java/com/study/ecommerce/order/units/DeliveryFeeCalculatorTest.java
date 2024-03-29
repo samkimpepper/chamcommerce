@@ -1,6 +1,7 @@
 package com.study.ecommerce.order.units;
 
 import com.study.ecommerce.member.*;
+import com.study.ecommerce.member.domain.Member;
 import com.study.ecommerce.member.dto.DeliveryAddressResponse;
 import com.study.ecommerce.order.repository.OrderRepository;
 import com.study.ecommerce.order.OrderService;

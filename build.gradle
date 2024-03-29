@@ -43,16 +43,18 @@ dependencies {
     // javax.xml.bind
     implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 
+    // rest-assured
     testImplementation ('io.rest-assured:rest-assured:5.2.0') {
         exclude group: 'org.codehaus.groovy', module: 'groovy'
         exclude group: 'org.codehaus.groovy', module: 'groovy-xml'
     }
     implementation 'org.apache.httpcomponents:httpcore:4.4.6'
 
-
-
     // log
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+
+    // batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 }
 
 tasks.named('test') {

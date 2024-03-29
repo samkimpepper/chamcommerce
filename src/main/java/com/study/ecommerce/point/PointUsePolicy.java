@@ -1,6 +1,6 @@
 package com.study.ecommerce.point;
 
-import com.study.ecommerce.member.Member;
+import com.study.ecommerce.member.domain.Member;
 
 public class PointUsePolicy {
     private static final int MINIMUM_ORDER_AMOUNT = 20000;

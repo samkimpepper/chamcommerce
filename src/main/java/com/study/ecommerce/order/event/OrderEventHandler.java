@@ -2,7 +2,6 @@ package com.study.ecommerce.order.event;
 
 import com.study.ecommerce.delivery.DeliveryService;
 import com.study.ecommerce.delivery.domain.Delivery;
-import com.study.ecommerce.member.Member;
 import com.study.ecommerce.notification.NotificationService;
 import com.study.ecommerce.order.OrderService;
 import com.study.ecommerce.order.SellerOrderService;
@@ -10,26 +9,17 @@ import com.study.ecommerce.order.domain.Order;
 import com.study.ecommerce.order.domain.OrderItem;
 import com.study.ecommerce.order.domain.OrderItems;
 import com.study.ecommerce.order.domain.SellerOrder;
-import com.study.ecommerce.order.dto.SellerOrderResponse;
-import com.study.ecommerce.order.repository.OrderItemRepository;
-import com.study.ecommerce.order.repository.OrderRepository;
-import com.study.ecommerce.order.repository.SellerOrderRepository;
 import com.study.ecommerce.point.PointService;
 import com.study.ecommerce.point.strategy.PurchasePointStrategy;
 import com.study.ecommerce.product.domain.ProductItem;
 import com.study.ecommerce.product.domain.ProductItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static java.util.stream.Collectors.groupingBy;
 

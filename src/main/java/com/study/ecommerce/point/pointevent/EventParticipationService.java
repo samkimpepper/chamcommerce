@@ -2,6 +2,10 @@ package com.study.ecommerce.point.pointevent;
 
 import com.study.ecommerce.point.PointService;
 import com.study.ecommerce.point.domain.PointType;
+import com.study.ecommerce.point.exception.EventAlreadyParticipatedException;
+import com.study.ecommerce.point.exception.EventNotInProgressException;
+import com.study.ecommerce.point.exception.EventParticipationLimitExceededException;
+import com.study.ecommerce.point.exception.PointEventNotFoundException;
 import com.study.ecommerce.point.pointevent.domain.AttendancePointEvent;
 import com.study.ecommerce.point.pointevent.domain.EventParticipation;
 import com.study.ecommerce.point.pointevent.domain.OneTimePointEvent;
@@ -22,7 +26,7 @@ public class EventParticipationService {
     @Transactional
     public void participate(Long memberId, Long eventId) {
         PointEvent event = pointEventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이벤트입니다."));
+                .orElseThrow(PointEventNotFoundException::new);
 
         if (event instanceof AttendancePointEvent) {
             AttendancePointEvent attendanceEvent = (AttendancePointEvent) event;
@@ -37,11 +41,11 @@ public class EventParticipationService {
     private void processOneTimePointEvent(OneTimePointEvent event, Long memberId) {
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(event.getStartedAt()) || now.isAfter(event.getEndedAt())) {
-            throw new IllegalArgumentException("이벤트 기간이 아닙니다.");
+            throw new EventNotInProgressException();
         }
 
         if (eventParticipationRepository.existsByMemberIdAndEventId(memberId, event.getId())) {
-            throw new IllegalArgumentException("이미 참여한 이벤트입니다.");
+            throw new EventAlreadyParticipatedException();
         }
 
         EventParticipation participation = EventParticipation.of(memberId, event, now);
@@ -54,7 +58,7 @@ public class EventParticipationService {
     private void processAttendancePointEvent(AttendancePointEvent event, Long memberId) {
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(event.getStartedAt()) || now.isAfter(event.getEndedAt())) {
-            throw new IllegalArgumentException("이벤트 기간이 아닙니다.");
+            throw new EventNotInProgressException();
         }
 
         EventParticipation participation = eventParticipationRepository.findByMemberIdAndEventId(memberId, event.getId())
@@ -64,7 +68,7 @@ public class EventParticipationService {
                 });
 
         if (participation.getContinuousCount() >= event.getAttendanceCount()) {
-            throw new IllegalArgumentException("이벤트 참여 횟수를 초과하였습니다.");
+            throw new EventParticipationLimitExceededException();
         }
         if (participation.getParticipatedAt().toLocalDate().equals(now.toLocalDate())) {
             throw new IllegalArgumentException("오늘은 이미 참여하였습니다.");
@@ -74,7 +78,7 @@ public class EventParticipationService {
 
         long point = event.calculatePoint(participation.getContinuousCount());
 
-        if (participation.getParticipatedAt().plus(event.getExpirationDuration()).isBefore(now)) {
+        if (participation.getParticipatedAt().plus(event.getExpirationDuration()).isBefore(now)) { // 만료
             participation.setContinuousCount(1);
         } else {
             participation.plusContinuousCount();

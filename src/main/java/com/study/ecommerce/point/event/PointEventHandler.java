@@ -1,7 +1,5 @@
 package com.study.ecommerce.point.event;
 
-import com.study.ecommerce.member.Member;
-import com.study.ecommerce.member.MemberRepository;
 import com.study.ecommerce.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -17,6 +17,7 @@ public class ProductService {
     private final ProductOptionDetailRepository productOptionDetailRepository;
     private final ProductItemRepository productItemRepository;
 
+    @Transactional
     public ProductResponse createProductInfo(ProductCreateRequest request, Long sellerId) {
         Product product = request.toEntity(sellerId);
         productRepository.save(product);
@@ -37,6 +38,7 @@ public class ProductService {
         return generateProductResponse(product);
     }
 
+    @Transactional
     public ProductResponse createProductItem(Long productId, ProductItemCreateRequest request) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));

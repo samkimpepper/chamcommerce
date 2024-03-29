@@ -1,5 +1,6 @@
 package com.study.ecommerce.point.pointevent;
 
+import com.study.ecommerce.point.exception.InvalidPointEventTypeException;
 import com.study.ecommerce.point.pointevent.domain.AttendancePointEvent;
 import com.study.ecommerce.point.pointevent.domain.OneTimePointEvent;
 import com.study.ecommerce.point.pointevent.domain.PointEvent;
@@ -28,7 +29,7 @@ public class PointEventService {
 
             return PointEventResponse.of(event);
         }
-        return null;
+        throw new InvalidPointEventTypeException();
     }
 
     public List<PointEventResponse> getOngoingPointEvents() {

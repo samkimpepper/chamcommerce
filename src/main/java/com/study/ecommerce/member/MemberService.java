@@ -1,7 +1,9 @@
 package com.study.ecommerce.member;
 
+import com.study.ecommerce.member.domain.Member;
+import com.study.ecommerce.member.domain.MemberGrade;
+import com.study.ecommerce.member.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +16,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberResponse getMemberInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+                .orElseThrow(MemberNotFoundException::new);
 
         return MemberResponse.of(member);
     }
@@ -22,7 +24,7 @@ public class MemberService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void earnPoints(Long memberId, long points) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+                .orElseThrow(MemberNotFoundException::new);
 
         member.earnPoints(points);
     }
@@ -30,8 +32,16 @@ public class MemberService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void usePoints(Long memberId, long points) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+                .orElseThrow(MemberNotFoundException::new);
 
         member.usePoints(points);
+    }
+
+    @Transactional
+    public void updateMemberGrade(Long memberId, MemberGrade memberGrade) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        member.setGrade(memberGrade);
     }
 }

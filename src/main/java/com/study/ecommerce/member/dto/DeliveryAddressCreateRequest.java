@@ -1,6 +1,6 @@
 package com.study.ecommerce.member.dto;
 
-import com.study.ecommerce.member.DeliveryAddress;
+import com.study.ecommerce.member.domain.DeliveryAddress;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

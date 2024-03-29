@@ -1,12 +1,15 @@
 package com.study.ecommerce.order;
 
 import com.study.ecommerce.delivery.domain.Delivery;
-import com.study.ecommerce.member.DeliveryAddress;
+import com.study.ecommerce.member.domain.DeliveryAddress;
 import com.study.ecommerce.member.DeliveryAddressRepository;
-import com.study.ecommerce.member.Member;
+import com.study.ecommerce.member.domain.Member;
 import com.study.ecommerce.member.MemberRepository;
+import com.study.ecommerce.member.exception.DeliveryAddressNotFoundException;
+import com.study.ecommerce.member.exception.MemberNotFoundException;
 import com.study.ecommerce.order.domain.Order;
 import com.study.ecommerce.order.domain.OrderItem;
+import com.study.ecommerce.order.domain.OrderStatus;
 import com.study.ecommerce.order.dto.OrderCreateRequest;
 import com.study.ecommerce.order.dto.OrderItemRequest;
 import com.study.ecommerce.order.dto.OrderResponse;
@@ -14,7 +17,7 @@ import com.study.ecommerce.order.event.OrderCancelledEvent;
 import com.study.ecommerce.order.event.OrderCompletedEvent;
 import com.study.ecommerce.order.event.OrderCreatedEvent;
 import com.study.ecommerce.order.event.OrderPlacedEvent;
-import com.study.ecommerce.order.repository.OrderItemRepository;
+import com.study.ecommerce.order.exception.OrderNotFoundException;
 import com.study.ecommerce.order.repository.OrderRepository;
 import com.study.ecommerce.point.PointService;
 import com.study.ecommerce.point.PointUsePolicy;
@@ -27,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -46,7 +51,7 @@ public class OrderService {
     @Transactional
     public OrderResponse createOrder(OrderCreateRequest request, Long customerId) {
         DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(request.getDeliveryAddressId())
-                .orElseThrow(() -> new IllegalArgumentException("배송지가 존재하지 않습니다."));
+                .orElseThrow(DeliveryAddressNotFoundException::new);
 
         List<ProductItem> productItems = productItemRepository
                 .findAllById(request.getOrderOptionGroups()
@@ -69,7 +74,7 @@ public class OrderService {
                 .sum();
 
         Member member = memberRepository.findById(customerId)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+                .orElseThrow(MemberNotFoundException::new);
 
         // 쿠폰, 포인트 적용 로직
         if (request.getPointsToUse() > 0) {
@@ -92,7 +97,7 @@ public class OrderService {
     @Transactional
     public OrderResponse cancelOrder(Long orderId) {
         Order order = orderRepository.findByIdWithOrderItems(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+                .orElseThrow(OrderNotFoundException::new);
 
         order.cancel();
 
@@ -104,7 +109,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderResponse getOrderDetail(Long orderId) {
         Order order = orderRepository.findByIdWithOrderItems(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+                .orElseThrow(OrderNotFoundException::new);
 
         return OrderResponse.of(order);
     }
@@ -118,12 +123,34 @@ public class OrderService {
     @Transactional
     public OrderResponse completeOrder(Long orderId) {
         Order order = orderRepository.findByIdWithOrderItems(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+                .orElseThrow(OrderNotFoundException::new);
 
         order.complete();
 
         applicationEventPublisher.publishEvent(new OrderCompletedEvent(order.getCustomerId(), order, order.getTotalPrice()));
 
         return OrderResponse.of(order);
+    }
+
+    public long getTotalAmountThisMonth(Long memberId) {
+        LocalDateTime start = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime end = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).atStartOfDay().plusDays(1).minusSeconds(1);
+
+        List<Order> ordersThisMonth = orderRepository.findByCustomerIdAndOrderedAtBetweenAndStatus(memberId, start, end, OrderStatus.COMPLETED);
+
+        long totalAmountThisMonth = ordersThisMonth.stream()
+                .mapToLong(Order::getTotalPrice)
+                .sum();
+
+        return totalAmountThisMonth;
+    }
+
+    public int getTotalCountThisMonth(Long memberId) {
+        LocalDateTime start = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime end = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).atStartOfDay().plusDays(1).minusSeconds(1);
+
+        List<Order> ordersThisMonth = orderRepository.findByCustomerIdAndOrderedAtBetweenAndStatus(memberId, start, end, OrderStatus.COMPLETED);
+
+        return ordersThisMonth.size();
     }
 }

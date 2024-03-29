@@ -1,6 +1,6 @@
 package com.study.ecommerce.delivery.domain;
 
-import com.study.ecommerce.member.DeliveryAddress;
+import com.study.ecommerce.member.domain.DeliveryAddress;
 import com.study.ecommerce.order.domain.Order;
 import com.study.ecommerce.order.domain.SellerOrder;
 import jakarta.persistence.*;

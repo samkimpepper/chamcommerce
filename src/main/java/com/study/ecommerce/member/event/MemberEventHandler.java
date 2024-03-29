@@ -1,5 +1,6 @@
-package com.study.ecommerce.member;
+package com.study.ecommerce.member.event;
 
+import com.study.ecommerce.member.domain.Role;
 import com.study.ecommerce.point.PointService;
 import com.study.ecommerce.point.strategy.SignupPointStrategy;
 import lombok.RequiredArgsConstructor;

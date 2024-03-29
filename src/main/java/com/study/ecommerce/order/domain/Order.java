@@ -1,7 +1,7 @@
 package com.study.ecommerce.order.domain;
 
 import com.study.ecommerce.delivery.domain.Delivery;
-import com.study.ecommerce.member.DeliveryAddress;
+import com.study.ecommerce.member.domain.DeliveryAddress;
 import com.study.ecommerce.order.DeliveryFeeCalculator;
 import jakarta.persistence.*;
 import lombok.*;

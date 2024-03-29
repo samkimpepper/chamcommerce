@@ -1,10 +1,7 @@
-package com.study.ecommerce.member;
+package com.study.ecommerce.member.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +28,11 @@ public class Member {
 
     @Builder.Default
     private long points = 0;
+
+    @Setter
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private MemberGrade grade = MemberGrade.WHITE;
 
     public void earnPoints(long points) {
         this.points += points;

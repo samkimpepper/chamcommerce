@@ -1,6 +1,6 @@
 package com.study.ecommerce.auth.token;
 
-import com.study.ecommerce.member.Role;
+import com.study.ecommerce.member.domain.Role;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;

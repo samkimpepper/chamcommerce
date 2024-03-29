@@ -1,7 +1,7 @@
 package com.study.ecommerce.order.units;
 
 import com.study.ecommerce.member.DeliveryAddressService;
-import com.study.ecommerce.member.Member;
+import com.study.ecommerce.member.domain.Member;
 import com.study.ecommerce.member.MemberFixture;
 import com.study.ecommerce.member.AuthService;
 import com.study.ecommerce.member.dto.DeliveryAddressResponse;

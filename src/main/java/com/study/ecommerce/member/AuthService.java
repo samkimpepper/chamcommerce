@@ -1,9 +1,15 @@
 package com.study.ecommerce.member;
 
 import com.study.ecommerce.auth.token.JwtTokenProvider;
+import com.study.ecommerce.member.domain.Member;
+import com.study.ecommerce.member.domain.Role;
 import com.study.ecommerce.member.dto.LoginRequest;
 import com.study.ecommerce.member.dto.SignupRequest;
 import com.study.ecommerce.member.dto.TokenResponse;
+import com.study.ecommerce.member.event.MemberSignedUpEvent;
+import com.study.ecommerce.member.exception.InvalidPasswordException;
+import com.study.ecommerce.member.exception.MemberAlreadyExistsException;
+import com.study.ecommerce.member.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,7 +31,7 @@ public class AuthService {
 
     public Member signUp(SignupRequest signupRequest) {
         if (memberRepository.existsByEmail(signupRequest.getEmail())) {
-            return null;
+            throw new MemberAlreadyExistsException();
         }
 
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
@@ -43,9 +49,15 @@ public class AuthService {
         return member;
     }
 
-    public TokenResponse login(LoginRequest loginRequest) {
+    public TokenResponse login(LoginRequest request) {
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
+        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+
         Authentication authentication = authenticationManagerBuilder.getObject()
-                .authenticate(loginRequest.toAuthentication());
+                .authenticate(request.toAuthentication());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
